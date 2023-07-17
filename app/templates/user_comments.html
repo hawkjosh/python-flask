@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block nav %}
+{% include 'partials/nav_auth.html' %}
+{% endblock nav %}
+
+{% block content %}
+<div class="comments-list-container">
+	{% if comments|length == 0 %}
+	<div class="no-comments-msg">
+		You have not posted any comments yet...what are you waiting for?!?
+	</div>
+	{% else %}
+	<div class="current-user-page-header">
+		You have posted {{ comments|length|pluralize_comment }}
+	</div>
+	{% for comment in comments|sort(reverse=true, attribute="created_at") %}
+	<div class="comment-card curr-user">
+		<div class="comment-content">{{ comment.content }}</div>
+		<div class="comment-info-container">
+			<div class="comment-subtext">
+				<span class="strong curr-user">You</span> posted this comment on <span class="strong">{{ comment.created_at|clean_date }}</span>
+			</div>
+			<div class="comment-counts">
+				<div class="replies-count-wrapper">
+					<a
+						class="replies-count curr-user"
+						href="{{ url_for('reply', comment_id=comment.id) }}"
+						role="button">
+						{{ comment.replies|length|pluralize_reply }}
+					</a>
+					{% if comment.replies %}
+					<div class="replies-tooltip curr-user">
+						{% for reply in comment.replies %}
+						<span class="reply-username">{{ reply.user.username }}</span>
+						{% endfor %}
+					</div>
+					{% endif %}
+				</div>
+				<span class="count-divider">|</span>
+				<div class="likes-count-wrapper">
+					<span
+						class="likes-count curr-user">
+						{{ comment.likes|length|pluralize_like }}
+					</span>
+					{% if comment.likes %}
+					<div class="likes-tooltip curr-user">
+						{% for like in comment.likes %}
+						<span class="likes-username">{{ like.user.username }}</span>
+						{% endfor %}
+					</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+	{% endif %}
+</div>
+{% endblock content %}

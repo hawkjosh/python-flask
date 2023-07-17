@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block nav %}
+{% include 'partials/nav_auth.html' %}
+{% endblock nav %}
+
+{% block content %}
+<div class="comments-list-container">
+	{% if likes|length == 0 %}
+	<div class="no-comments-message">
+		You have not liked any comments yet...what are you waiting for?!?
+	</div>
+	{% else %}
+	<div class="current-user-page-header">You have liked {{ likes|length|pluralize_comment }}</div>
+	{% for like in likes|sort(reverse=true,
+	attribute="comment_id") %}
+	<div class="{% if like.comment.user_id == current_user.id %}comment-card curr-user{% else %}comment-card{% endif %}">
+		<div class="comment-text">{{ like.comment.content }}</div>
+		<div class="comment-info-container">
+			<div class="comment-subtext">
+				{{ like.comment.user.username }} posted this comment on
+				<span class="strong"
+					>{{ like.comment.created_at|clean_date }}</span
+				>
+			</div>
+			<div class="comment-counts">
+				<div class="replies-count-wrapper">
+					<a class="{% if like.comment.user_id == current_user.id %}replies-count curr-user{% else %}replies-count{% endif %}" href="{{ url_for('reply', comment_id=like.comment.id) }}" role="button">{{ like.comment.replies|length|pluralize_reply }}</a>
+					{% if like.comment.replies %}
+					<div class="replies-from-tooltip">
+						{% for reply in like.comment.replies %}
+						<span class="username">{{ reply.user.username }}</span>
+						{% endfor %}
+					</div>
+					{% endif %}
+				</div>
+				<span class="count-divider">|</span>
+				<div class="likes-count-wrapper">
+					<span class="{% if like.comment.user_id == current_user.id %}likes-count curr-user{% else %}likes-count{% endif %}">{{ like.comment.likes|length|pluralize_like }}</span>
+					{% if like.comment.likes %}
+					<div class="liked-by-tooltip">
+						{% for like in like.comment.likes %}
+						<span class="username">{{ like.user.username }}</span>
+						{% endfor %}
+					</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+	{% endif %}
+</div>
+{% endblock content %}

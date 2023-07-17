@@ -1,0 +1,5 @@
+.edit-comment-container {
+	& .edit-comment-label {
+		color: var(--color-primary);
+	}
+}

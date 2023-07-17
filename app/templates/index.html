@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block nav %}
+{% if not current_user.is_authenticated %}
+{% include 'partials/nav_unauth.html' %}
+{% else %}
+{% include 'partials/nav_auth.html' %}
+{% endif %}
+{% endblock nav %}
+
+{% block content %}
+{% if not current_user.is_authenticated %}
+<div class="login-message-container">
+	<div class="login-message-text">
+		You must be logged in to interact with the comment forum.
+	</div>
+</div>
+{% include 'partials/comments_unauth.html' %}
+{% else %}
+{% include 'partials/comments_auth.html' %}
+{% endif %}
+{% endblock content %}

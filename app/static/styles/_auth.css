@@ -1,0 +1,99 @@
+.auth-error-container {
+	width: 92.5%;
+	margin: auto;
+	border: none;
+	border-radius: 0.375rem;
+	padding: 0.75rem 1.25rem;
+	background-color: var(--color-light);
+	border: 0.25rem solid var(--color-orange);
+	height: 13rem;
+	translate: 0 -5%;
+
+	& .auth-error-content-wrapper {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 1.5rem;
+		height: 100%;
+
+		& .auth-error-msg {
+			font-size: 1.5rem;
+			font-weight: 600;
+			color: var(--color-orange);
+		}
+
+		& form > .auth-error-close-btn {
+			padding: 8px 16px;
+			font-family: inherit;
+			font-size: 20px;
+			color: var(--color-light);
+			background-color: hsl(9, 100%, 64%);
+			border: 1px solid hsl(9, 100%, 64%);
+			border-radius: 8px;
+			cursor: pointer;
+			transition: all 0.25s ease-in-out;
+
+			&:hover {
+				background-color: hsl(9, 100%, 55%);
+			}
+
+			&:active {
+				background-color: hsl(9, 100%, 46%);
+			}
+		}
+	}
+}
+
+.auth-form-container {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+
+	& .auth-input {
+		min-height: 58px;
+		padding: 16px 12px;
+		color: hsl(210, 11%, 15%);
+		border: 1px solid hsl(210, 14%, 89%);
+		border-radius: 6px;
+		font-size: 1rem;
+
+		&::placeholder {
+			color: hsl(210, 11%, 65%);
+			font-family: inherit;
+			font-size: 1rem;
+		}
+	}
+
+	& .auth-actions {
+		display: flex;
+		align-items: center;
+		gap: 1.125rem;
+
+		& .auth-action-btn {
+			padding: 8px 16px;
+			font-family: inherit;
+			font-size: 20px;
+			color: var(--color-light);
+			background-color: var(--color-green);
+			border: 1px solid var(--color-green);
+			border-radius: 8px;
+			cursor: pointer;
+			transition: all 0.25s ease-in-out;
+      text-decoration: none;
+
+			&:hover {
+				background-color: hsl(120, 61%, 40%);
+			}
+
+			&:active {
+				background-color: hsl(120, 61%, 30%);
+			}
+		}
+
+		& .auth-alt-link {
+			color: hsl(216, 98%, 52%);
+			font-size: 20px;
+		}
+	}
+}

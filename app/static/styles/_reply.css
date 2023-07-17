@@ -1,0 +1,202 @@
+.comment-container {
+	background-color: hsla(195, 100%, 90%, 1);
+	border: 0.0625rem solid var(--color-primary);
+	box-shadow: 0.5rem 0.5rem 0.75rem var(--color-secondary);
+	border-radius: 0.5rem;
+	padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+
+	&.current-user {
+		background-color: hsla(120, 61%, 90%, 1);
+		border: 0.125rem solid var(--color-green);
+	}
+
+	& .comment-info {
+		font-style: italic;
+		font-family: var(--font-monospace);
+		color: hsla(208, 7%, 46%, 1);
+
+		& .strong {
+			font-weight: bold;
+
+			&.other-user {
+				color: var(--color-primary);
+			}
+
+			&.current-user {
+				color: var(--color-green);
+			}
+		}
+	}
+
+	& .comment-text {
+		font-size: 1.25rem;
+		line-height: 1.875rem;
+		color: hsla(210, 11%, 15%, 1);
+		width: 95%;
+		margin: auto;
+	}
+}
+
+.reply-input-container {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	margin-bottom: 2rem;
+
+	& .reply-textbox-label {
+		color: var(--color-primary);
+		font-size: calc(1.375rem + 0.75vw);
+		font-weight: 500;
+		vertical-align: middle;
+	}
+
+	& .reply-textbox-container {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 1.5rem;
+
+		& .reply-textbox {
+			width: 100%;
+			font-size: 1rem;
+			font-family: inherit;
+			line-height: 1.5rem;
+			color: hsla(210, 11%, 15%, 1);
+			background-color: hsla(220, 5%, 89%, 1);
+			border: 0.0625rem solid hsla(210, 14%, 89%, 1);
+			border-radius: 0.375rem;
+			padding: 0.375rem 0.75rem;
+			resize: none;
+			box-shadow: 0.5rem 0.5rem 0.75rem var(--color-secondary);
+		}
+
+		& .reply-textbox-actions {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+			align-self: flex-end;
+
+			& .reply-action-btn {
+				border: none;
+				border-radius: 0.375rem;
+				padding: 0.375rem 0.75rem;
+				font-size: 1rem;
+				line-height: 1.5rem;
+				color: var(--color-light);
+				text-decoration: none;
+				font-family: var(--font-primary);
+
+				&.reply {
+					background-color: var(--color-primary);
+
+					&:hover {
+						cursor: pointer;
+						background-color: hsla(215, 90%, 44%, 1);
+					}
+					&:active {
+						background-color: hsla(216, 91%, 42%, 1);
+					}
+				}
+
+				&.cancel {
+					background-color: hsla(45, 100%, 51%, 1);
+					color: hsla(0, 0%, 0%, 1);
+
+					&:hover {
+						background-color: hsla(45, 100%, 59%, 1);
+					}
+					&:active {
+						background-color: hsl(45deg, 100%, 61%, 1);
+					}
+				}
+			}
+		}
+	}
+}
+
+.reply-divider {
+	width: 100%;
+
+	& .reply-divider-line {
+		background-color: var(--color-primary);
+		border-style: none;
+		height: 0.125rem;
+		margin: 2rem 2.5% 1rem;
+	}
+}
+
+.replies-list-container {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	margin: auto 2.5%;
+
+	& .replies-list-item {
+		background-color: hsla(195, 100%, 90%, 1);
+		border: 0.0625rem solid var(--color-primary);
+		box-shadow: 0.5rem 0.5rem 0.75rem var(--color-secondary);
+		border-radius: 0.5rem;
+		padding: 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+
+		&.current-user {
+			background-color: hsla(120, 61%, 90%, 1);
+			border: 0.125rem solid var(--color-green);
+		}
+
+		& .reply-text {
+			line-height: 1.625rem;
+			color: hsla(210, 11%, 15%, 1);
+		}
+
+		& .reply-info-wrapper {
+			display: flex;
+			place-items: center;
+			gap: 1.5rem;
+
+			& .reply-info {
+				font-family: var(--font-monospace);
+				color: hsla(208, 7%, 46%, 1);
+				font-size: 0.75rem;
+
+				& .strong {
+					font-weight: bold;
+
+					&.other-user {
+						color: var(--color-primary);
+					}
+
+					&.current-user {
+						color: var(--color-green);
+					}
+				}
+			}
+
+			& .reply-action {
+				display: inline-block;
+
+				& .delete-btn {
+					background-color: transparent;
+					border: none;
+
+					& svg {
+						width: 1.25rem;
+						fill: hsla(210, 13%, 50%, 1);
+						transition: transform 0.25s ease-in-out;
+
+						&:hover {
+							cursor: pointer;
+							fill: hsla(9, 100%, 64%, 1);
+							transform: scale(1.375);
+						}
+					}
+				}
+			}
+		}
+	}
+}

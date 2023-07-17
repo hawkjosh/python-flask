@@ -1,0 +1,235 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test HTML</title>
+  <style>
+    .modal {
+      border: none;
+      padding: 0.5rem;
+      background: hsl(120, 61%, 50%);
+      border-radius: 0.5rem;
+      box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.5);
+
+      & div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+
+        & div {
+          color: white;
+          font-family: monospace;
+          font-size: 1.5rem;
+        }
+
+        & button {
+          background: red;
+          border: 2px solid white;
+          padding: 0.125rem 0.5rem;
+          border-radius: 0.75rem;
+          color: white;
+          font-family: cursive;
+          font-size: 1.125rem;
+          cursor: pointer;
+
+          &:hover {
+            background: white;
+            border-color: red;
+            color: red;
+          }
+        }
+      }
+
+      &::backdrop {
+        background-color: hsla(0, 100%, 50%, 0.65);
+      }
+    }
+
+    .dialog {
+      border: none;
+      padding: 0.5rem;
+      background: hsl(120, 61%, 50%);
+      border-radius: 0.5rem;
+      box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.5);
+      z-index: 0;
+
+      & div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+
+        & div {
+          color: white;
+          font-family: monospace;
+          font-size: 1.5rem;
+        }
+
+        & button {
+          background: red;
+          border: 2px solid white;
+          padding: 0.125rem 0.5rem;
+          border-radius: 0.75rem;
+          color: white;
+          font-family: cursive;
+          font-size: 1.125rem;
+          cursor: pointer;
+
+          &:hover {
+            background: white;
+            border-color: red;
+            color: red;
+          }
+        }
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div style="display: flex; justify-content: center; gap: 2rem">
+    <div>
+      <button data-open-modal-default>Open Default Modal</button>
+      <dialog data-modal-default>
+        <div>
+          <div>This is the default modal</div>
+          <button data-close-modal-default>Close</button>
+        </div>
+      </dialog>
+    </div>
+    <div>
+      <button data-open-modal-styled>Open Styled Modal</button>
+      <dialog data-modal-styled class="modal">
+        <div>
+          <div>This is a styled modal</div>
+          <button data-close-modal-styled>Close</button>
+        </div>
+      </dialog>
+    </div>
+    <div>
+      <button data-open-dialog-default>Open Default Dialog</button>
+      <dialog data-dialog-default>
+        <div>
+          <div>This is the default dialog</div>
+          <button data-close-dialog-default>Close</button>
+        </div>
+      </dialog>
+    </div>
+    <div>
+      <button data-open-dialog-styled>Open Styled Dialog</button>
+      <dialog data-dialog-styled class="dialog">
+        <div>
+          <div>This is a styled dialog</div>
+          <button data-close-dialog-styled>Close</button>
+        </div>
+      </dialog>
+    </div>
+    <div>
+      <button data-open-modal-form>Open Form Modal</button>
+      <dialog data-modal-form>
+        <form>
+          <input type="text" />
+          <button type="submit">Submit</button>
+          <button type="submit" formmethod="dialog">Cancel</button>
+        </form>
+      </dialog>
+    </div>
+  </div>
+
+  <script>
+    const openDefaultModalBtn = document.querySelector('[data-open-modal-default]')
+    const closeDefaultModalBtn = document.querySelector('[data-close-modal-default]')
+    const defaultModal = document.querySelector('[data-modal-default]')
+
+    openDefaultModalBtn.addEventListener('click', () => {
+      defaultModal.showModal()
+    })
+
+    closeDefaultModalBtn.addEventListener('click', () => {
+      defaultModal.close()
+    })
+
+    const openDefaultDialogBtn = document.querySelector('[data-open-dialog-default]')
+    const closeDefaultDialogBtn = document.querySelector('[data-close-dialog-default]')
+    const defaultDialog = document.querySelector('[data-dialog-default]')
+
+    openDefaultDialogBtn.addEventListener('click', () => {
+      defaultDialog.show()
+    })
+
+    closeDefaultDialogBtn.addEventListener('click', () => {
+      defaultDialog.close()
+    })
+
+    const openStyledModalBtn = document.querySelector('[data-open-modal-styled]')
+    const closeStyledModalBtn = document.querySelector('[data-close-modal-styled]')
+    const styledModal = document.querySelector('[data-modal-styled]')
+
+    openStyledModalBtn.addEventListener('click', () => {
+      styledModal.showModal()
+    })
+
+    closeStyledModalBtn.addEventListener('click', () => {
+      styledModal.close()
+    })
+
+    styledModal.addEventListener("click", e => {
+      const modalDimensions = styledModal.getBoundingClientRect()
+      if (
+        e.clientX < modalDimensions.left ||
+        e.clientX > modalDimensions.right ||
+        e.clientY < modalDimensions.top ||
+        e.clientY > modalDimensions.bottom
+      ) {
+        styledModal.close()
+      }
+    })
+
+    const openStyledDialogBtn = document.querySelector('[data-open-dialog-styled]')
+    const closeStyledDialogBtn = document.querySelector('[data-close-dialog-styled]')
+    const styledDialog = document.querySelector('[data-dialog-styled]')
+
+    openStyledDialogBtn.addEventListener('click', () => {
+      styledDialog.show()
+    })
+
+    closeStyledDialogBtn.addEventListener('click', () => {
+      styledDialog.close()
+    })
+
+    styledDialog.addEventListener("click", e => {
+      const dialogDimensions = styledDialog.getBoundingClientRect()
+      if (
+        e.clientX < dialogDimensions.left ||
+        e.clientX > dialogDimensions.right ||
+        e.clientY < dialogDimensions.top ||
+        e.clientY > dialogDimensions.bottom
+      ) {
+        styledDialog.close()
+      }
+    })
+
+    const openFormModalBtn = document.querySelector('[data-open-modal-form]')
+    const formModal = document.querySelector('[data-modal-form]')
+
+    openFormModalBtn.addEventListener('click', () => {
+      formModal.showModal()
+    })
+
+    formModal.addEventListener("click", e => {
+      const modalDimensions = formModal.getBoundingClientRect()
+      if (
+        e.clientX < modalDimensions.left ||
+        e.clientX > modalDimensions.right ||
+        e.clientY < modalDimensions.top ||
+        e.clientY > modalDimensions.bottom
+      ) {
+        formModal.close()
+      }
+    })
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,95 @@
+<div class="comments-list-container">
+  {% if comments|length == 0 %}
+  <div class="no-comments-message">
+    No comments posted yet...be the first!!
+  </div>
+  {% else %}
+  {% for comment in comments|sort(reverse=true, attribute="created_at") %}
+  <div class="{% if comment.user_id == current_user.id %}comment-card curr-user{% else %}comment-card{% endif %}">
+    <div class="comment-content">{{ comment.content }}</div>
+    <div class="comment-info-container">
+      <div class="comment-subtext">
+        Posted by <span class="{% if comment.user_id == current_user.id %}strong curr-user{% else %}strong user{% endif %}">{{ comment.id|convert_curr_user }}</span> on <span class="strong">{{ comment.created_at|clean_date }}</span>
+      </div>
+      <div class="comment-counts">
+        <div class="replies-count-wrapper">
+          <a
+            class="{% if comment.replies|length == 0 %}replies-count{% elif comment.user_id == current_user.id %}replies-count curr-user{% else %}replies-count user{% endif %}"
+            href="{{ url_for('reply', comment_id=comment.id) }}"
+            role="button">
+            {{ comment.replies|length|pluralize_reply }}
+          </a>
+          {% if comment.replies %}
+          <div
+            class="{% if comment.user_id == current_user.id %}replies-tooltip curr-user{% else %}replies-tooltip{% endif %}">
+            {% for reply in comment.replies %}
+            <span class="reply-username">{{ reply.user.username }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+        <span class="count-divider">|</span>
+        <div class="likes-count-wrapper">
+          <span
+            class="{% if comment.likes|length == 0 %}likes-count{% elif comment.user_id == current_user.id %}likes-count curr-user{% else %}likes-count user{% endif %}">
+            {{ comment.likes|length|pluralize_like }}
+          </span>
+          {% if comment.likes %}
+          <div
+            class="{% if comment.user_id == current_user.id %}likes-tooltip curr-user{% else %}likes-tooltip{% endif %}">
+            {% for like in comment.likes %}
+            <span class="likes-username">{{ like.user.username }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="comment-actions">
+      <div class="action-btn-wrapper">
+        <span class="action-tooltip like">Like</span>
+        <form action="{{ url_for('like_comment', comment_id=comment.id) }}" method="POST">
+          <button class="action-btn" type="submit">
+            <svg class="action-btn-icon like" viewBox="0 0 40 40">
+              <path
+                d="M31.5 14.7h-6.9v-7.1a3.6 3.4 90 0 0-3.4-3.6h-2.4a2.4 2.3 90 0 0-2.3 2l-1 7l-4.1 6.4h-7.4v16.6h24a8.3 8 90 0 0 8-8.3v-8.3a4.7 4.6 90 0 0-4.6-4.7zm-20.6 19h-4.6v-11.9h4.6zm22.9-5.9a5.9 5.7 90 0 1-5.7 5.9h-14.9v-12.7l4.5-7l1-7.5h2.4a1.2 1.1 90 0 1 1.1 1.2v9.5h9.1a2.4 2.3 90 0 1 2.3 2.4Z" />
+            </svg>
+          </button>
+        </form>
+      </div>
+      <div class="action-btn-wrapper">
+        <span class="action-tooltip reply">Reply</span>
+        <a class="action-btn" href="{{ url_for('reply', comment_id=comment.id) }}">
+          <svg class="action-btn-icon reply" viewBox="0 0 40 40">
+            <path
+              d="M18.4 19.5v3.4q0 0.7 0.5 1.2t1.1 0.5q0.7 0 1.1-0.5t0.5-1.2v-3.4h3.2q0.7 0 1.1-0.5t0.5-1.2q0-0.7-0.5-1.2t-1.1-0.5h-3.2v-3.4q0-0.7-0.5-1.2t-1.1-0.5q-0.7 0-1.1 0.5t-0.5 1.2v3.4h-3.2q-0.7 0-1.1 0.5t-0.5 1.2q0 0.7 0.5 1.2t1.1 0.5h3.2zm-8 12l-3.7 4q-0.8 0.8-1.7 0.4t-1-1.6v-26.9q0-1.4 0.9-2.4t2.3-1h25.6q1.3 0 2.3 1t0.9 2.4v20.6q0 1.4-0.9 2.4t-2.3 1h-22.4zm-3.2-3.4h25.6v-20.6h-25.6v20.6zm0 0v-20.6v20.6Z" />
+          </svg>
+        </a>
+      </div>
+      {% if comment.user_id == current_user.id %}
+      <div class="action-btn-wrapper">
+        <span class="action-tooltip edit">Edit</span>
+        <a class="action-btn" href="{{ url_for('edit_comment', comment_id=comment.id) }}">
+          <svg class="action-btn-icon edit" viewBox="0 0 40 40">
+            <path
+              d="M7.5 32.5h2.5l15.1-15.1l-2.5-2.5l-15.1 15.1v2.5zm25.1-17.7l-7.5-7.4l2.5-2.5q1-1 2.5-1t2.5 1l2.5 2.5q1 1 1 2.4t-1 2.4l-2.5 2.5zm-2.5 2.6l-18.6 18.6h-7.5v-7.5l18.6-18.6l7.5 7.5zm-6.2-1.3l-1.2-1.2l2.5 2.5l-1.2-1.2Z" />
+          </svg>
+        </a>
+      </div>
+      <div class="action-btn-wrapper">
+        <span class="action-tooltip delete">Delete</span>
+        <form action="{{ url_for('delete_comment', comment_id=comment.id) }}" method="POST">
+          <button class="action-btn" type="submit">
+            <svg class="action-btn-icon delete" viewBox="0 0 40 40">
+              <path
+                d="M10 36q-1.6 0-2.8-1t-1.2-2.5v-23.1h-2v-3.6h10v-1.8h12v1.8h10v3.6h-2v23.1q0 1.5-1.2 2.5t-2.8 1h-20zm20-26.7h-20v23.1h20v-23.1zm-16 19.6h4v-16h-4v16zm8 0h4v-16h-4v16Z" />
+            </svg>
+          </button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+  {% endif %}
+</div>

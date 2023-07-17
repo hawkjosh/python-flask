@@ -1,0 +1,94 @@
+{# TODO This is just testing the ability to group multiple replies to same comment #}
+{% extends "base.html" %}
+
+{% block nav %}
+{% include 'partials/nav_auth.html' %}
+{% endblock nav %}
+
+{% block content %}
+{% for comment_id, data in grouped_data.items() %}
+    <div style="font-weight: bold">{{ data.comment_content }}</div>
+		<ul>
+    {% for reply in data.replies %}
+        <li style="font-style: italic">{{ reply }}</li>
+    {% endfor %}
+	</ul>
+{% endfor %}
+{% endblock content %}
+
+{# PIN Below code is working user_replies.html code...DO NOT DELETE IT #}
+
+<!-- {% extends "base.html" %}
+
+{% block nav %}
+{% include 'partials/nav_auth.html' %}
+{% endblock nav %}
+
+{% block content %}
+<div class="comments-list-container">
+	{% if replies|length == 0 %}
+	<div class="no-comments-message">
+		You have not replied to any comments yet...what are you waiting for?!?
+	</div>
+	{% else %}
+	<div class="current-user-page-header">
+		You have replied to {{ replies|length|pluralize_comment }}
+	</div>
+	{% for reply in replies|sort(reverse=true, attribute="created_at") %}
+	<div class="{% if reply.comment.user_id == current_user.id %}comment-card curr-user{% else %}comment-card{% endif %}">
+		<div class="comment-content">{{ reply.comment.content }}</div>
+		<div class="comment-info-container">
+			<div class="comment-subtext">
+				Posted by <span
+					class="{% if reply.comment.user_id == current_user.id %}strong curr-user{% else %}strong user{% endif %}">{{
+					reply.comment.id|convert_curr_user }}</span> on <span class="strong">{{ reply.comment.created_at|clean_date
+					}}</span>
+			</div>
+			<div class="comment-counts">
+				<div class="replies-count-wrapper">
+					<a class="{% if reply.comment.replies|length == 0 %}replies-count{% elif reply.comment.user_id == current_user.id %}replies-count curr-user{% else %}replies-count user{% endif %}"
+						href="{{ url_for('reply', comment_id=reply.comment.id) }}" role="button">
+						{{ reply.comment.replies|length|pluralize_reply }}
+					</a>
+					{% if reply.comment.replies %}
+					<div
+						class="{% if reply.comment.user_id == current_user.id %}replies-tooltip curr-user{% else %}replies-tooltip{% endif %}">
+						{% for reply in reply.comment.replies %}
+						<span class="reply-username">{{ reply.user.username }}</span>
+						{% endfor %}
+					</div>
+					{% endif %}
+				</div>
+				<span class="count-divider">|</span>
+				<div class="likes-count-wrapper">
+					<span
+						class="{% if reply.comment.likes|length == 0 %}likes-count{% elif reply.comment.user_id == current_user.id %}likes-count curr-user{% else %}likes-count user{% endif %}">
+						{{ reply.comment.likes|length|pluralize_like }}
+					</span>
+					{% if reply.comment.likes %}
+					<div
+						class="{% if reply.comment.user_id == current_user.id %}likes-tooltip curr-user{% else %}likes-tooltip{% endif %}">
+						{% for like in reply.comment.likes %}
+						<span class="likes-username">{{ like.user.username }}</span>
+						{% endfor %}
+					</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+
+		<div class="comment-replies-divider">
+			<hr
+				class="{% if reply.comment.user_id == current_user.id %}comment-replies-divider-line curr-user{% else %}comment-replies-divider-line{% endif %}" />
+		</div>
+
+		<div class="comment-replies-container">
+			<div class="comment-replies-info">
+				You replied on {{ reply.created_at|clean_date }}:
+			</div>
+			<div class="comment-reply-content">{{ replies.content }}</div>
+		</div>
+	</div>
+	{% endfor %} {% endif %}
+</div>
+{% endblock content %} -->
