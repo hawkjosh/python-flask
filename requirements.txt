@@ -1,3 +1,5 @@
+# PIN → run command < pip install Flask SQLAlchemy Flask-Login Flask-SQLAlchemy mysql-connector-python Flask-Migrate PyMySQL python-dotenv bcrypt cryptography > or alternatively run command < pip install -r requirements.txt >
+
 alembic==1.11.1
 blinker==1.6.2
 click==8.1.4
