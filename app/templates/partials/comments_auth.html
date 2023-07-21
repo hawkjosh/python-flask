@@ -7,7 +7,7 @@
   </div>
   {% else %}
   {% for comment in comments|sort(reverse=true, attribute="created_at") %}
-  <div class="{% if comment.user_id == current_user.id %}comment-card curr-user{% else %}comment-card{% endif %}">
+  <div class="{% if comment.user_id == current_user.id %}comment-card curr-user{% else %}comment-card{% endif %}" data-comment-id="{{ comment.id }}" data-comment-content="{{ comment.content }}" data-comment-username="{{ comment.id|comment_username }}" data-comment-date="{{ comment.created_at|clean_date }}">
     <div class="comment-content">{{ comment.content }}</div>
     <div class="comment-info-container">
       <div class="comment-subtext">
@@ -61,22 +61,22 @@
       </div>
       <div class="action-btn-wrapper">
         <span class="action-tooltip reply">Reply</span>
-        <div class="action-btn" data-comment-reply-open="{{ comment.id }}">
+        <button class="action-btn" type="button" data-comment-reply-open="{{ comment.id }}">
           <svg class="action-btn-icon reply" viewBox="0 0 40 40">
             <path
               d="M18.4 19.5v3.4q0 0.7 0.5 1.2t1.1 0.5q0.7 0 1.1-0.5t0.5-1.2v-3.4h3.2q0.7 0 1.1-0.5t0.5-1.2q0-0.7-0.5-1.2t-1.1-0.5h-3.2v-3.4q0-0.7-0.5-1.2t-1.1-0.5q-0.7 0-1.1 0.5t-0.5 1.2v3.4h-3.2q-0.7 0-1.1 0.5t-0.5 1.2q0 0.7 0.5 1.2t1.1 0.5h3.2zm-8 12l-3.7 4q-0.8 0.8-1.7 0.4t-1-1.6v-26.9q0-1.4 0.9-2.4t2.3-1h25.6q1.3 0 2.3 1t0.9 2.4v20.6q0 1.4-0.9 2.4t-2.3 1h-22.4zm-3.2-3.4h25.6v-20.6h-25.6v20.6zm0 0v-20.6v20.6Z" />
           </svg>
-        </div>
+        </button>
       </div>
       {% if comment.user_id == current_user.id %}
       <div class="action-btn-wrapper">
         <span class="action-tooltip edit">Edit</span>
-        <div class="action-btn" data-comment-edit-open="{{ comment.id }}">
+        <button class="action-btn" type="button" data-comment-edit-open="{{ comment.id }}">
           <svg class="action-btn-icon edit" viewBox="0 0 40 40">
             <path
             d="M7.5 32.5h2.5l15.1-15.1l-2.5-2.5l-15.1 15.1v2.5zm25.1-17.7l-7.5-7.4l2.5-2.5q1-1 2.5-1t2.5 1l2.5 2.5q1 1 1 2.4t-1 2.4l-2.5 2.5zm-2.5 2.6l-18.6 18.6h-7.5v-7.5l18.6-18.6l7.5 7.5zm-6.2-1.3l-1.2-1.2l2.5 2.5l-1.2-1.2Z" />
           </svg>
-        </div>
+        </button>
       </div>
       <!-- <div class="action-btn-wrapper">
         <span class="action-tooltip edit">Edit</span>
@@ -103,23 +103,29 @@
   </div>
 
   <dialog class="comment-reply-modal" data-comment-reply>
-    <form class="comment-reply-form" action="{{ url_for('reply_comment', comment_id=comment.id) }}" method="POST">
+    <form class="comment-reply-form" method="POST" data-comment-reply-form>
+      <div class="comment-reply-comment-card">
+        <div class="comment-reply-comment-content" data-comment-reply-comment></div>
+        <div class="comment-reply-comment-subtext">
+          Posted by<span class="strong" data-comment-reply-username></span> on <span class="strong" data-comment-reply-date></span>
+        </div>
+      </div>
       <textarea class="comment-reply-textbox" name="contents" placeholder="Write your reply..."
         data-comment-reply-text></textarea>
       <div class="comment-reply-actions">
         <input class="action-btn reply" type="submit" value="Reply" />
-        <input class="action-btn cancel" type="submit" formmethod="dialog" value="Cancel" data-comment-reply-close />
+        <input class="action-btn cancel" type="button" value="Cancel" data-comment-reply-close />
       </div>
     </form>
   </dialog>
 
-  <dialog class="comment-reply-modal" data-comment-edit>
-    <form class="comment-reply-form" action="{{ url_for('edit_comment', comment_id=comment.id) }}" method="POST">
-      <textarea class="comment-reply-textbox" name="contents"
-        data-comment-edit-text>{{ comment.content }}</textarea>
-      <div class="comment-reply-actions">
-        <input class="action-btn reply" type="submit" value="Save" />
-        <input class="action-btn cancel" type="submit" formmethod="dialog" value="Cancel" data-comment-edit-close />
+  <dialog class="comment-edit-modal" data-comment-edit>
+    <form class="comment-edit-form" action="{{ url_for('edit_comment', comment_id=comment.id) }}" method="POST">
+      <textarea class="comment-edit-textbox" name="contents"
+        data-comment-edit-comment></textarea>
+      <div class="comment-edit-actions">
+        <input class="action-btn save" type="submit" value="Save" />
+        <input class="action-btn cancel" type="button" value="Cancel" data-comment-edit-close />
       </div>
     </form>
   </dialog>

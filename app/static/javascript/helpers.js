@@ -72,31 +72,56 @@ newCommentClose.addEventListener('click', () => {
 // })
 
 // javascript functionality for comment reply
-const commentReplyOpenBtns = document.querySelectorAll(
-	'[data-comment-reply-open]'
-)
-const commentReplyClose = document.querySelector('[data-comment-reply-close]')
-const commentReply = document.querySelector('[data-comment-reply]')
-const commentReplyText = document.querySelector('[data-comment-reply-text]')
+document.addEventListener('DOMContentLoaded', () => {
+	const commentReplyOpenBtns = document.querySelectorAll(
+		'[data-comment-reply-open]'
+	)
+	const commentReplyClose = document.querySelector('[data-comment-reply-close]')
+	const commentReply = document.querySelector('[data-comment-reply]')
+	const commentReplyText = document.querySelector('[data-comment-reply-text]')
+	const commentReplyComment = document.querySelector(
+		'[data-comment-reply-comment]'
+	)
+	const commentReplyUsername = document.querySelector(
+		'[data-comment-reply-username]'
+	)
+	const commentReplyDate = document.querySelector('[data-comment-reply-date]')
+	let scrollPosition = 0
 
-const clearReplyText = () => {
-	commentReplyText.value = ''
-}
+	const clearReplyText = () => {
+		commentReplyText.value = ''
+	}
 
-commentReplyOpenBtns.forEach((btn) => {
-	btn.addEventListener('click', () => {
-		const commentId = btn.getAttribute('data-comment-reply-open');
-		const form = commentReply.querySelector('form');
-		form.action = `/comment/reply/${commentId}`;
-		document.body.classList.add('no-scroll');
-    commentReply.showModal()
+	const closeModal = () => {
+		clearReplyText()
+		document.body.classList.remove('no-scroll')
+		commentReply.close()
+		window.scrollTo(0, scrollPosition)
+	}
+
+	commentReplyOpenBtns.forEach((btn) => {
+		btn.addEventListener('click', () => {
+			scrollPosition = window.scrollY
+			const commentId = btn.getAttribute('data-comment-reply-open')
+			const commentCard = document.querySelector(
+				`[data-comment-id="${commentId}"]`
+			)
+			const comment = commentCard.getAttribute('data-comment-content')
+			const username = commentCard.getAttribute('data-comment-username')
+			const date = commentCard.getAttribute('data-comment-date')
+			const form = commentReply.querySelector('form')
+			commentReplyComment.textContent = comment
+			commentReplyUsername.textContent = username
+			commentReplyDate.textContent = date
+			form.action = `/comment/reply/${commentId}`
+			document.body.classList.add('no-scroll')
+			commentReply.showModal()
+		})
 	})
-})
 
-commentReplyClose.addEventListener('click', () => {
-	clearReplyText()
-	document.body.classList.remove('no-scroll')
-	commentReply.close()
+	commentReplyClose.addEventListener('click', () => {
+		closeModal()
+	})
 })
 
 // javascript functionality for comment edit
@@ -105,18 +130,31 @@ const commentEditOpenBtns = document.querySelectorAll(
 )
 const commentEditClose = document.querySelector('[data-comment-edit-close]')
 const commentEdit = document.querySelector('[data-comment-edit]')
+const commentEditComment = document.querySelector('[data-comment-edit-comment]')
+let scrollPosition = 0
+
+const closeModal = () => {
+	document.body.classList.remove('no-scroll')
+	commentEdit.close()
+	window.scrollTo(0, scrollPosition)
+}
 
 commentEditOpenBtns.forEach((btn) => {
 	btn.addEventListener('click', () => {
-		const commentId = btn.getAttribute('data-comment-edit-open');
-		const form = commentEdit.querySelector('form');
-		form.action = `/comment/edit/${commentId}`;
-		document.body.classList.add('no-scroll');
-    commentEdit.showModal()
+		scrollPosition = window.scrollY
+		const commentId = btn.getAttribute('data-comment-edit-open')
+		const commentCard = document.querySelector(
+			`[data-comment-id="${commentId}"]`
+		)
+		const comment = commentCard.getAttribute('data-comment-content')
+		const form = commentEdit.querySelector('form')
+		commentEditComment.value = comment
+		form.action = `/comment/edit/${commentId}`
+		document.body.classList.add('no-scroll')
+		commentEdit.showModal()
 	})
 })
 
 commentEditClose.addEventListener('click', () => {
-	document.body.classList.remove('no-scroll')
-	commentEdit.close()
+	closeModal()
 })

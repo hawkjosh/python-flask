@@ -24,7 +24,7 @@
 			<div class="comment-subtext">
 				<span
 					class="{% if like.comment.user_id == current_user.id %}strong curr-user{% else %}strong user{% endif %}"
-					>{{ like.comment.id|like_username }}</span
+					>{{ like.id|like_username }}</span
 				>
 				posted this comment on
 				<span class="strong">{{ like.comment.created_at|clean_date }}</span>

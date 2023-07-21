@@ -206,7 +206,7 @@ def edit_comment(comment_id):
     return render_template("edit.html", comment=comment)
 
 
-@app.route("/comment/reply/<int:comment_id>", methods=["POST"])
+@app.route("/comment/reply/<int:comment_id>", methods=["GET", "POST"])
 @login_required
 def reply_comment(comment_id):
     comment = Comment.query.get(comment_id)
