@@ -1,12 +1,12 @@
 .auth-error-container {
-	width: 92.5%;
-	margin: auto;
-	border: none;
+	width: 90%;
+	max-width: 64rem;
+	height: 25vh;
+	border: 0.125rem solid var(--accent-color-two);
 	border-radius: 0.375rem;
+	background: var(--accent-color-three);
+	margin: auto;
 	padding: 0.75rem 1.25rem;
-	background-color: var(--color-light);
-	border: 0.25rem solid var(--color-orange);
-	height: 13rem;
 	translate: 0 -5%;
 
 	& .auth-error-content-wrapper {
@@ -20,26 +20,26 @@
 		& .auth-error-msg {
 			font-size: 1.5rem;
 			font-weight: 600;
-			color: var(--color-orange);
+			color: var(--primary-color);
 		}
 
-		& form > .auth-error-close-btn {
-			padding: 8px 16px;
+		& .auth-error-close-btn {
+			color: var(--primary-color);
+			background: var(--accent-color-two);
+			border: 0.0625rem solid var(--primary-color);
 			font-family: inherit;
-			font-size: 20px;
-			color: var(--color-light);
-			background-color: hsl(9, 100%, 64%);
-			border: 1px solid hsl(9, 100%, 64%);
-			border-radius: 8px;
+			font-weight: 500;
+			padding: 0.5rem 0.75rem;
+			border-radius: 0.375rem;
+			font-size: 1rem;
 			cursor: pointer;
-			transition: all 0.25s ease-in-out;
-
+			transition: all 0.125s ease-in-out;
 			&:hover {
-				background-color: hsl(9, 100%, 55%);
+				filter: brightness(110%);
+				box-shadow: var(--button-shadow);
 			}
-
 			&:active {
-				background-color: hsl(9, 100%, 46%);
+				filter: brightness(95%);
 			}
 		}
 	}
@@ -51,15 +51,14 @@
 	gap: 1rem;
 
 	& .auth-input {
-		min-height: 58px;
-		padding: 16px 12px;
-		color: hsl(210, 11%, 15%);
-		border: 1px solid hsl(210, 14%, 89%);
-		border-radius: 6px;
-		font-size: 1rem;
-
+		min-height: 3.625rem;
+		padding: 1rem 0.75rem;
+		color: var(--text-color);
+		border: 0.0625rem solid hsla(var(--primary-color-hsl), 0.25);
+		border-radius: 0.375rem;
+		font-size: 1.125rem;
 		&::placeholder {
-			color: hsl(210, 11%, 65%);
+			color: var(--subtext-color);
 			font-family: inherit;
 			font-size: 1rem;
 		}
@@ -70,30 +69,27 @@
 		align-items: center;
 		gap: 1.125rem;
 
-		& .auth-action-btn {
-			padding: 8px 16px;
+		& .action-btn {
+			color: var(--secondary-color);
+			border: 0.0625rem solid transparent;
+			background: var(--accent-color-one);
 			font-family: inherit;
-			font-size: 20px;
-			color: var(--color-light);
-			background-color: var(--color-green);
-			border: 1px solid var(--color-green);
-			border-radius: 8px;
+			font-weight: 500;
+			padding: 0.5rem 0.75rem;
+			border-radius: 0.375rem;
+			font-size: 1.125rem;
 			cursor: pointer;
 			transition: all 0.25s ease-in-out;
-      text-decoration: none;
-
+			text-decoration: none;
 			&:hover {
-				background-color: hsl(120, 61%, 40%);
+				filter: brightness(110%);
+				color: var(--primary-color);
+				box-shadow: var(--button-shadow);
+				border-color: var(--primary-color);
 			}
-
 			&:active {
-				background-color: hsl(120, 61%, 30%);
+				filter: brightness(95%);
 			}
-		}
-
-		& .auth-alt-link {
-			color: hsl(216, 98%, 52%);
-			font-size: 20px;
 		}
 	}
 }

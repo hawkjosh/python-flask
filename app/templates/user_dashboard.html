@@ -1,42 +1,40 @@
 {% extends "base.html" %}
 
 {% block nav %}
-{% include 'partials/nav_auth.html' %}
+{% include 'partials/nav_auth_no_post.html' %}
 {% endblock nav %}
 
 {% block content %}
-<main>
-  <div class="dashboard-title">
-    My Dashboard
+<div class="dashboard-title">
+  My Dashboard
+</div>
+<div class="dashboard-info-container">
+  <div class="dashboard-item-wrapper comments">
+    <div class="dashboard-item-content">{{ comments|length|pluralize_comment|upper }}</div>
+    {% if comments %}
+
+    <a class="dashboard-item-btn comments" href="{{ url_for('user_comments') }}">View Your Comments</a>
+    {% endif %}
   </div>
-  <div class="dashboard-info-container">
-    <div class="dashboard-item-wrapper">
-      <div class="dashboard-item-content">{{ comments|length|pluralize_comment|upper }}</div>
-      {% if comments %}
-
-      <a class="dashboard-item-btn" href="{{ url_for('user_comments') }}">View Your Comments</a>
-      {% endif %}
-    </div>
-    <div class="dashboard-divider">
-      <hr class="dashboard-divider-line" />
-    </div>
-    <div class="dashboard-item-wrapper">
-      <div class="dashboard-item-content">{{ replies|length|pluralize_reply|upper }}</div>
-      {% if replies %}
-
-      <a class="dashboard-item-btn" href="{{ url_for('user_replies') }}">View Your Replies</a>
-      {% endif %}
-    </div>
-    <div class="dashboard-divider">
-      <hr class="dashboard-divider-line" />
-    </div>
-    <div class="dashboard-item-wrapper">
-      <div class="dashboard-item-content">{{ likes|length|pluralize_like|upper }}</div>
-      {% if likes %}
-
-      <a class="dashboard-item-btn" href="{{ url_for('user_likes') }}">View Your Likes</a>
-      {% endif %}
-    </div>
+  <div class="dashboard-divider">
+    <hr class="dashboard-divider-line" />
   </div>
-</main>
+  <div class="dashboard-item-wrapper replies">
+    <div class="dashboard-item-content">{{ replies|length|pluralize_reply|upper }}</div>
+    {% if replies %}
+
+    <a class="dashboard-item-btn replies" href="{{ url_for('user_replies') }}">View Your Replies</a>
+    {% endif %}
+  </div>
+  <div class="dashboard-divider">
+    <hr class="dashboard-divider-line" />
+  </div>
+  <div class="dashboard-item-wrapper likes">
+    <div class="dashboard-item-content">{{ likes|length|pluralize_like|upper }}</div>
+    {% if likes %}
+
+    <a class="dashboard-item-btn likes" href="{{ url_for('user_likes') }}">View Your Likes</a>
+    {% endif %}
+  </div>
+</div>
 {% endblock content %}

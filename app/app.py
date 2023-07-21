@@ -135,14 +135,34 @@ def pluralize_reply(count):
         return str(count) + " " + "replies"
 
 
-@app.template_filter("convert_curr_user")
-def convert_curr_user(comment_id):
+@app.template_filter("comment_username")
+def comment_username(comment_id):
     comment = Comment.query.get(comment_id)
 
     if comment.user_id == current_user.id:
         return "YOU"
     else:
         return comment.user.username
+
+
+@app.template_filter("reply_username")
+def reply_username(reply_id):
+    reply = Reply.query.get(reply_id)
+
+    if reply.user_id == current_user.id:
+        return "YOU"
+    else:
+        return reply.user.username
+
+
+@app.template_filter("like_username")
+def like_username(like_id):
+    like = Like.query.get(like_id)
+
+    if like.user_id == current_user.id:
+        return "YOU"
+    else:
+        return like.user.username
 
 
 @app.template_filter("clean_date")
@@ -168,6 +188,151 @@ def index():
     db.session.add(comment)
     db.session.commit()
     return redirect(url_for("index"))
+
+
+@app.route("/comment/edit/<int:comment_id>", methods=["GET", "POST"])
+@login_required
+def edit_comment(comment_id):
+    comment = Comment.query.get(comment_id)
+
+    if comment.user_id != current_user.id:
+        return redirect(url_for("index"))
+
+    if request.method == "POST":
+        comment.content = request.form["contents"]
+        db.session.commit()
+        return redirect(url_for("index"))
+
+    return render_template("edit.html", comment=comment)
+
+
+@app.route("/comment/reply/<int:comment_id>", methods=["POST"])
+@login_required
+def reply_comment(comment_id):
+    comment = Comment.query.get(comment_id)
+
+    if request.method == "POST":
+        reply_content = request.form.get("contents")
+        reply = Reply(content=reply_content, user=current_user, comment_id=comment_id)
+        db.session.add(reply)
+        db.session.commit()
+        return redirect(url_for("index"))
+
+    return render_template("reply_comment.html", comment=comment)
+
+
+@app.route("/replies/<int:comment_id>", methods=["GET"])
+@login_required
+def replies(comment_id):
+    comment = Comment.query.get(comment_id)
+    replies = Reply.query.filter_by(comment_id=comment_id).all()
+
+    if comment is None:
+        return redirect(url_for("index"))
+
+    if not current_user.is_authenticated:
+        return redirect(url_for("login"))
+
+    return render_template("replies.html", comment=comment, replies=replies)
+
+
+@app.route("/comment/delete/<int:comment_id>", methods=["POST"])
+@login_required
+def delete_comment(comment_id):
+    comment = Comment.query.get(comment_id)
+
+    if comment is None:
+        return redirect(url_for("index"))
+
+    if comment.user_id != current_user.id:
+        return redirect(url_for("index"))
+
+    Reply.query.filter_by(comment_id=comment_id).delete()
+    Like.query.filter_by(comment_id=comment_id).delete()
+    db.session.delete(comment)
+    db.session.commit()
+    return redirect(url_for("index"))
+
+
+@app.route("/reply/delete/<int:reply_id>", methods=["POST"])
+@login_required
+def delete_reply(reply_id):
+    reply = Reply.query.get(reply_id)
+
+    if reply is None:
+        return redirect(url_for("index"))
+
+    if reply.user_id != current_user.id:
+        return redirect(url_for("index"))
+
+    db.session.delete(reply)
+    db.session.commit()
+    return redirect(url_for("replies", comment_id=reply.comment_id))
+
+
+@app.route("/comment/like/<int:comment_id>", methods=["POST"])
+@login_required
+def like_comment(comment_id):
+    comment = Comment.query.get(comment_id)
+
+    if comment is None:
+        return redirect(url_for("index"))
+
+    like = Like.query.filter_by(comment_id=comment_id, user_id=current_user.id).first()
+    if like is None:
+        like = Like(comment_id=comment_id, user_id=current_user.id, value=True)
+        db.session.add(like)
+    elif like.value:
+        db.session.delete(like)
+
+    db.session.commit()
+
+    return redirect(url_for("index"))
+
+
+@app.route("/user/dashboard", methods=["GET"])
+def user_dashboard():
+    user_id = current_user.id
+    comments = Comment.query.filter_by(user_id=user_id).all()
+    replies = Reply.query.filter_by(user_id=user_id).all()
+    likes = Like.query.filter_by(user_id=user_id).all()
+    return render_template(
+        "user_dashboard.html", comments=comments, replies=replies, likes=likes
+    )
+
+
+@app.route("/user/comments", methods=["GET"])
+def user_comments():
+    user_id = current_user.id
+    comments = Comment.query.filter_by(user_id=user_id).all()
+    return render_template("user_comments.html", comments=comments)
+
+
+@app.route("/user/replies", methods=["GET"])
+def user_replies():
+    user_id = current_user.id
+    replies = (
+        Reply.query.filter_by(user_id=user_id).order_by(Reply.created_at.desc()).all()
+    )
+
+    grouped_replies = {}
+
+    for reply in replies:
+        comment_id = reply.comment_id
+        if comment_id not in grouped_replies:
+            grouped_replies[comment_id] = []
+        grouped_replies[comment_id].append(reply)
+
+    return render_template(
+        "user_replies.html", grouped_replies=grouped_replies, replies=replies
+    )
+
+
+@app.route("/user/likes", methods=["GET"])
+def user_likes():
+    user_id = current_user.id
+    likes = Like.query.filter_by(user_id=user_id).all()
+    return render_template("user_likes.html", likes=likes)
 
 
 @app.route("/register/", methods=["GET", "POST"])
@@ -218,155 +383,6 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("index"))
-
-
-@app.route("/edit/<int:comment_id>", methods=["GET", "POST"])
-@login_required
-def edit_comment(comment_id):
-    comment = Comment.query.get(comment_id)
-
-    if comment is None:
-        return redirect(url_for("index"))
-
-    if comment.user_id != current_user.id:
-        return redirect(url_for("index"))
-
-    if request.method == "POST":
-        if not current_user.is_authenticated:
-            return redirect(url_for("login"))
-
-        comment.content = request.form["contents"]
-        db.session.commit()
-        return redirect(url_for("index"))
-
-    return render_template("edit.html", comment=comment)
-
-
-@app.route("/reply/<int:comment_id>", methods=["GET", "POST"])
-@login_required
-def reply(comment_id):
-    comment = Comment.query.get(comment_id)
-
-    if comment is None:
-        return redirect(url_for("index"))
-
-    if request.method == "POST":
-        if not current_user.is_authenticated:
-            return redirect(url_for("login"))
-
-        reply_content = request.form.get("contents")
-        reply = Reply(content=reply_content, user=current_user, comment_id=comment_id)
-        db.session.add(reply)
-        db.session.commit()
-        return redirect(url_for("reply", comment_id=comment_id))
-
-    replies = Reply.query.filter_by(comment_id=comment_id).all()
-    return render_template("reply.html", comment=comment, replies=replies)
-
-
-@app.route("/comment/delete/<int:comment_id>", methods=["POST"])
-@login_required
-def delete_comment(comment_id):
-    comment = Comment.query.get(comment_id)
-
-    if comment is None:
-        return redirect(url_for("index"))
-
-    if comment.user_id != current_user.id:
-        return redirect(url_for("index"))
-
-    Reply.query.filter_by(comment_id=comment_id).delete()
-    Like.query.filter_by(comment_id=comment_id).delete()
-    db.session.delete(comment)
-    db.session.commit()
-    return redirect(url_for("index"))
-
-
-@app.route("/reply/delete/<int:reply_id>", methods=["POST"])
-@login_required
-def delete_reply(reply_id):
-    reply = Reply.query.get(reply_id)
-
-    if reply is None:
-        return redirect(url_for("index"))
-
-    if reply.user_id != current_user.id:
-        return redirect(url_for("index"))
-
-    db.session.delete(reply)
-    db.session.commit()
-    return redirect(url_for("reply", comment_id=reply.comment_id))
-
-
-@app.route("/comment/like/<int:comment_id>", methods=["POST"])
-@login_required
-def like_comment(comment_id):
-    comment = Comment.query.get(comment_id)
-
-    if comment is None:
-        return redirect(url_for("index"))
-
-    like = Like.query.filter_by(comment_id=comment_id, user_id=current_user.id).first()
-    if like is None:
-        like = Like(comment_id=comment_id, user_id=current_user.id, value=True)
-        db.session.add(like)
-    elif like.value:
-        db.session.delete(like)
-
-    db.session.commit()
-
-    return redirect(url_for("index"))
-
-
-@app.route("/user/dashboard", methods=["GET"])
-def user_dashboard():
-    user_id = current_user.id
-    comments = Comment.query.filter_by(user_id=user_id).all()
-    replies = Reply.query.filter_by(user_id=user_id).all()
-    likes = Like.query.filter_by(user_id=user_id).all()
-    return render_template(
-        "user_dashboard.html", comments=comments, replies=replies, likes=likes
-    )
-
-
-@app.route("/user/comments", methods=["GET"])
-def user_comments():
-    user_id = current_user.id
-    comments = Comment.query.filter_by(user_id=user_id).all()
-    return render_template("user_comments.html", comments=comments)
-
-
-@app.route("/user/replies", methods=["GET"])
-def user_replies():
-    user_id = current_user.id
-    comments = Comment.query.all()
-    replies = Reply.query.filter_by(user_id=user_id).all()
-
-    grouped_data = {}
-    for row in comments:
-        comment_id = row.id
-        if comment_id not in grouped_data:
-            grouped_data[comment_id] = {
-                "comment_content": row.content,
-                "replies": [],
-            }
-        grouped_data[comment_id]["replies"].append(row.content)
-
-    return render_template(
-        "user_replies.html", replies=replies, grouped_data=grouped_data
-    )
-
-
-@app.route("/user/likes", methods=["GET"])
-def user_likes():
-    user_id = current_user.id
-    likes = Like.query.filter_by(user_id=user_id).all()
-    return render_template("user_likes.html", likes=likes)
-
-
-@app.route("/colors")
-def colors():
-    return render_template("colors.html")
 
 
 if __name__ == "__main__":

@@ -34,48 +34,56 @@
 	flex-direction: column;
 	gap: 1.5rem;
 
-	& .no-comments-message {
-		width: 75%;
-		font-size: 1.5rem;
-		font-weight: 500;
-		text-align: center;
-		padding: 2rem;
-		margin: auto;
-		color: var(--color-purple);
-		background-color: var(--color-orange);
-		border: 0.25rem solid var(--color-purple);
+	& .no-comments-msg-wrapper {
+		width: 100%;
+		height: 10vh;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border: 0.125rem solid var(--accent-color-two);
+		border-radius: 0.375rem;
+		background: var(--accent-color-three);
+		padding: 0.75rem 1.25rem;
+
+		& .no-comments-msg {
+			font-size: 1.5rem;
+			font-weight: 600;
+			color: var(--primary-color);
+			&.unauth {
+				filter: blur(0.25rem);
+			}
+		}
 	}
 
 	& .current-user-page-header {
 		font-size: 2rem;
 		font-weight: bold;
-		color: var(--color-green);
+		color: var(--primary-color);
 	}
 
 	& .comment-card {
-		background-color: hsla(195, 100%, 90%, 1);
-		border: 0.0625rem solid var(--color-primary);
-		box-shadow: 0.25rem 0.25rem 0.625rem hsla(195, 100%, 50%, 0.3);
+		background: var(--secondary-color);
+		border: 0.0625rem solid var(--primary-color);
+		box-shadow: var(--card-shadow);
 		border-radius: 0.5rem;
 		padding: 1rem;
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
 		&.curr-user {
-			background-color: hsla(120, 61%, 90%, 1);
-			border: 0.125rem solid var(--color-green);
-			box-shadow: 0.5rem 0.5rem 0.625rem hsla(120, 61%, 50%, 0.3);
-		}
-		&.unauth {
-			background-color: var(--color-secondary);
-			border: 0.125rem solid var(--color-secondary);
-			box-shadow: 0.375rem 0.375rem 0.75rem var(--color-secondary);
+			background: var(--secondary-color);
+			border: 0.0625rem solid var(--primary-color);
 		}
 
 		& .comment-content {
 			font-size: 1.25rem;
 			line-height: 1.875rem;
-			color: hsla(210, 11%, 15%, 1);
+			color: var(--text-color);
+			&.unauth {
+				font-size: 1.125rem;
+				line-height: 1.625rem;
+				filter: blur(0.25rem);
+			}
 		}
 
 		& .comment-info-container {
@@ -83,23 +91,28 @@
 			justify-content: space-between;
 			align-items: center;
 			width: 90%;
+			&.unauth {
+				filter: blur(0.25rem);
+			}
 			@media (width < 40rem) {
 				flex-direction: column;
 				gap: 0.75rem;
 			}
 
 			& .comment-subtext {
-				font-family: var(--font-monospace);
+				font-family: var(--subtext-font);
 				font-size: 0.875rem;
-				color: hsla(208, 7%, 46%, 1);
+				color: var(--subtext-color);
 
 				& .strong {
-					font-weight: bold;
+					font-weight: 600;
+					color: var(--accent-color-one);
+					filter: contrast(75%);
 					&.curr-user {
-						color: var(--color-green);
+						color: var(--accent-color-one);
 					}
 					&.user {
-						color: var(--color-primary);
+						color: var(--accent-color-one);
 					}
 				}
 			}
@@ -110,7 +123,7 @@
 				align-items: center;
 				gap: 0.375rem;
 				font-style: italic;
-				color: hsla(208, 7%, 46%, 1);
+				color: var(--accent-color-three);
 
 				& .replies-count-wrapper {
 					position: relative;
@@ -118,11 +131,11 @@
 					& .replies-tooltip {
 						display: none;
 						border-radius: 0.375rem;
-						background-color: var(--color-light);
-						box-shadow: 0.375rem 0.375rem 0.5rem hsla(0, 0%, 70%, 0.5);
+						background: var(--secondary-color);
+						box-shadow: var(--tooltip-shadow);
 						padding: 0.5rem 0.25rem;
 						font-size: 0.875rem;
-						color: var(--color-primary);
+						color: var(--accent-color-one);
 						position: absolute;
 						right: 0;
 						transform: translateY(0.5rem);
@@ -130,13 +143,13 @@
 						flex-direction: column;
 						gap: 0.375rem;
 						&.curr-user {
-							color: var(--color-green);
+							color: var(--accent-color-one);
 						}
 
 						& .reply-username {
 							margin-left: 0.0625rem;
 							font-style: normal;
-							font-weight: bold;
+							font-weight: 500;
 							display: flex;
 							gap: 0.25rem;
 							&::before {
@@ -151,38 +164,38 @@
 
 					& .replies-count {
 						text-decoration: none;
-						font-weight: bold;
-						color: hsla(208, 7%, 46%, 1);
+						font-weight: 700;
+						color: var(--accent-color-one);
 						padding: 0.25rem 0.5rem;
 						border-radius: 0.375rem;
 						transition: all 0.25s ease-in-out;
 						&.curr-user {
-							color: var(--color-green);
+							color: var(--accent-color-one);
 							&:hover {
-								color: var(--color-green);
-								outline: 0.0625rem solid var(--color-green);
+								color: var(--accent-color-one);
+								outline: 0.0625rem solid var(--accent-color-one);
 							}
 						}
 						&.user {
-							color: var(--color-primary);
+							color: var(--accent-color-one);
 							&:hover {
-								color: var(--color-primary);
-								outline: 0.0625rem solid var(--color-primary);
+								color: var(--accent-color-one);
+								outline: 0.0625rem solid var(--accent-color-one);
 							}
 						}
 						&.unauth:hover {
 							cursor: default;
-							color: hsla(208, 7%, 46%, 1);
+							color: var(--accent-color-one);
 						}
 						&:hover {
-							color: hsla(208, 7%, 25%, 1);
+							color: var(--hover-color);
 						}
 					}
 				}
 
 				& .count-divider {
 					font-style: normal;
-					color: var(--color-dark);
+					color: var(--text-color);
 				}
 
 				& .likes-count-wrapper {
@@ -192,11 +205,11 @@
 					& .likes-tooltip {
 						display: none;
 						border-radius: 0.375rem;
-						background-color: var(--color-light);
-						box-shadow: 0.375rem 0.375rem 0.5rem hsla(0, 0%, 70%, 0.5);
+						background: var(--secondary-color);
+						box-shadow: var(--tooltip-shadow);
 						padding: 0.5rem 0.25rem;
 						font-size: 0.875rem;
-						color: var(--color-primary);
+						color: var(--accent-color-one);
 						position: absolute;
 						right: 0;
 						transform: translateY(0.5rem);
@@ -204,13 +217,13 @@
 						flex-direction: column;
 						gap: 0.375rem;
 						&.curr-user {
-							color: var(--color-green);
+							color: var(--accent-color-one);
 						}
 
 						& .likes-username {
 							margin-left: 0.0625rem;
 							font-style: normal;
-							font-weight: bold;
+							font-weight: 500;
 							display: flex;
 							gap: 0.25rem;
 							&::before {
@@ -224,31 +237,31 @@
 					}
 
 					& .likes-count {
-						font-weight: bold;
-						color: hsla(208, 7%, 46%, 1);
+						font-weight: 700;
+						color: var(--accent-color-one);
 						padding: 0.25rem 0.5rem;
 						border-radius: 0.375rem;
 						transition: all 0.25s ease-in-out;
 						&.curr-user {
-							color: var(--color-green);
+							color: var(--accent-color-one);
 							&:hover {
-								color: var(--color-green);
-								outline: 0.0625rem solid var(--color-green);
+								color: var(--accent-color-one);
+								outline: 0.0625rem solid var(--accent-color-one);
 							}
 						}
 						&.user {
-							color: var(--color-primary);
+							color: var(--accent-color-one);
 							&:hover {
-								color: var(--color-primary);
-								outline: 0.0625rem solid var(--color-primary);
+								color: var(--accent-color-one);
+								outline: 0.0625rem solid var(--accent-color-one);
 							}
 						}
 						&.unauth:hover {
 							cursor: default;
-							color: hsla(208, 7%, 46%, 1);
+							color: var(--accent-color-one);
 						}
 						&:hover {
-							color: hsla(208, 7%, 25%, 1);
+							color: var(--hover-color);
 						}
 					}
 				}
@@ -259,38 +272,40 @@
 			width: 100%;
 
 			& .comment-replies-divider-line {
-				background-color: var(--color-primary);
+				background: var(--primary-color);
 				border-style: none;
 				height: 0.125rem;
 				margin: 1rem 2.5%;
 				&.curr-user {
-					background-color: var(--color-green);
+					background: var(--primary-color);
 				}
 			}
 		}
 
-		& .comment-replies-container {
-			display: flex;
-			flex-direction: column;
-			gap: 0.75rem;
+		& .comment-replies-label {
+			font-size: 1.25rem;
+			font-weight: bold;
+			color: var(--primary-color);
+		}
+
+		& .comment-reply-content {
+			color: var(--text-color);
+			font-size: 1.125rem;
+			font-weight: 500;
 			width: 95%;
 			margin: auto;
-			border: 0.0625rem solid var(--color-dark);
-			background-color: var(--color-light);
+			border: 0.0625rem solid var(--primary-color);
+			background: var(--secondary-color);
 			padding: 0.75rem;
 			border-radius: 0.5rem;
-			box-shadow: 0.25rem 0.25rem 0.375rem hsla(0, 0%, 60%, 1);
+			box-shadow: var(--replies-card-shadow);
 
-			& .comment-replies-info {
-				color: hsla(208, 7%, 46%, 1);
-				font-style: italic;
+			& .comment-reply-subtext {
+				color: var(--subtext-color);
+				font-family: var(--subtext-font);
 				font-size: 0.875rem;
-			}
-
-			& .comment-replies-content {
-				color: var(--color-green);
-				font-size: 1.125rem;
-				font-weight: 500;
+				font-style: italic;
+				line-height: 2rem;
 			}
 		}
 
@@ -312,33 +327,45 @@
 				& .action-tooltip {
 					display: none;
 					border-radius: 0.875rem;
-					background-color: transparent;
+					background: transparent;
 					padding: 0.125rem 0.5rem;
 					font-size: 0.875rem;
-					font-weight: bold;
+					font-weight: 600;
 					text-align: center;
 					width: 100%;
 					position: absolute;
 					z-index: 1;
 					&.like {
-						border: 0.125rem solid hsla(33, 100%, 50%, 1);
+						/* border: 0.125rem solid hsla(33, 100%, 50%, 1);
 						color: hsla(33, 100%, 50%, 1);
-						background-color: hsla(33, 100%, 95%, 0.85);
+						background: hsla(33, 100%, 95%, 0.85); */
+						border: 0.125rem solid var(--primary-color);
+						color: var(--primary-color);
+						background: var(--secondary-color);
 					}
 					&.reply {
-						border: 0.125rem solid hsla(180, 100%, 27%, 1);
+						/* border: 0.125rem solid hsla(180, 100%, 27%, 1);
 						color: hsla(180, 100%, 27%, 1);
-						background-color: hsla(180, 100%, 95%, 0.85);
+						background: hsla(180, 100%, 95%, 0.85); */
+						border: 0.125rem solid var(--primary-color);
+						color: var(--primary-color);
+						background: var(--secondary-color);
 					}
 					&.edit {
-						border: 0.125rem solid hsla(197, 71%, 45%, 1);
+						/* border: 0.125rem solid hsla(197, 71%, 45%, 1);
 						color: hsla(197, 71%, 45%, 1);
-						background-color: hsla(197, 71%, 95%, 0.85);
+						background: hsla(197, 71%, 95%, 0.85); */
+						border: 0.125rem solid var(--primary-color);
+						color: var(--primary-color);
+						background: var(--secondary-color);
 					}
 					&.delete {
-						border: 0.125rem solid hsla(9, 100%, 64%, 1);
+						/* border: 0.125rem solid hsla(9, 100%, 64%, 1);
 						color: hsla(9, 100%, 64%, 1);
-						background-color: hsla(9, 100%, 95%, 0.85);
+						background: hsla(9, 100%, 95%, 0.85); */
+						border: 0.125rem solid var(--primary-color);
+						color: var(--primary-color);
+						background: var(--secondary-color);
 					}
 				}
 				&:hover .action-tooltip {
@@ -352,7 +379,7 @@
 				}
 
 				& .action-btn {
-					background-color: transparent;
+					background: transparent;
 					border: none;
 					aspect-ratio: 1/1;
 					width: 3.5rem;
@@ -363,27 +390,113 @@
 
 					& .action-btn-icon {
 						width: 2.25rem;
-						fill: hsla(210, 13%, 50%, 1);
+						/* fill: hsla(210, 13%, 50%, 1); */
+						fill: var(--accent-color-one);
 						transition: transform 0.25s linear;
 						&.like {
-							stroke: hsla(210, 13%, 50%, 1);
+							/* stroke: hsla(210, 13%, 50%, 1); */
+							stroke: var(--accent-color-one);
 							&:hover {
-								fill: hsla(33, 100%, 50%, 1);
-								stroke: hsla(33, 100%, 50%, 1);
+								/* fill: hsla(33, 100%, 50%, 1);
+								stroke: hsla(33, 100%, 50%, 1); */
+								fill: var(--hover-color);
+								stroke: var(--hover-color);
 							}
 						}
 						&.reply:hover {
-							fill: hsla(180, 100%, 27%, 1);
+							/* fill: hsla(180, 100%, 27%, 1); */
+							fill: var(--hover-color);
 						}
 						&.edit:hover {
-							fill: hsla(197, 71%, 45%, 1);
+							/* fill: hsla(197, 71%, 45%, 1); */
+							fill: var(--hover-color);
 						}
 						&.delete:hover {
-							fill: hsla(9, 100%, 64%, 1);
+							/* fill: hsla(9, 100%, 64%, 1); */
+							fill: var(--hover-color);
 						}
 					}
 					&:hover .action-btn-icon {
 						transform: scale(1.5);
+					}
+				}
+			}
+		}
+	}
+
+	& .comment-reply-modal {
+		width: 75%;
+		height: 50vh;
+		margin: auto;
+		border: none;
+		border-radius: 0.5rem;
+		padding: 2rem 4rem;
+		&::backdrop {
+			/* background: hsla(var(--primary-color-hsl), 0.5); */
+			background: hsla(204, 100%, 12%, 0.5);
+		}
+
+		& .comment-reply-form {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 1.25rem;
+			height: 100%;
+
+			/* PIN Update this element when i figure out how to render it correctly */
+			& .comment-reply-comment {
+				font-size: 1.25rem;
+				color: red;
+			}
+
+			& .comment-reply-textbox {
+				width: 100%;
+				height: 100%;
+				font-size: 1.25rem;
+				font-family: inherit;
+				line-height: 1.625rem;
+				color: hsla(210, 11%, 15%, 1);
+				background: var(--accent-color-three);
+				filter: brightness(115%);
+				border: 0.0625rem solid hsla(210, 14%, 89%, 1);
+				border-radius: 0.5rem;
+				padding: 0.375rem 0.75rem;
+				resize: none;
+				box-shadow: var(--textbox-shadow);
+				&::placeholder {
+					color: var(--subtext-color);
+				}
+			}
+
+			& .comment-reply-actions {
+				display: flex;
+				gap: 1.5rem;
+				align-self: flex-end;
+
+				& .action-btn {
+					color: var(--secondary-color);
+					border: 0.0625rem solid transparent;
+					font-family: inherit;
+					font-weight: 500;
+					padding: 0.5rem 0.75rem;
+					border-radius: 0.375rem;
+					font-size: 1rem;
+					cursor: pointer;
+					transition: all 0.25s ease-in-out;
+					&.reply {
+						background: var(--accent-color-one);
+					}
+					&.cancel {
+						background: var(--accent-color-two);
+					}
+					&:hover {
+						filter: brightness(90%);
+						color: var(--primary-color);
+						box-shadow: var(--button-shadow);
+						border-color: var(--primary-color);
+					}
+					&:active {
+						filter: brightness(75%);
 					}
 				}
 			}

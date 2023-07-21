@@ -18,17 +18,6 @@
 	<main>
 		{% block content %}{% endblock content %}
 	</main>
-
-	<dialog class="new-post-modal" data-post-modal>
-		<form class="post-comment-container" action="." method="POST">
-			<textarea class="post-comment-textbox" name="contents" placeholder="Post a new comment..." rows="5"></textarea>
-			<div class="post-comment-actions">
-				<input class="post-comment-btn" type="submit" value="Post" />
-				<input class="cancel-comment-btn" type="submit" formmethod="dialog" value="Cancel" />
-			</div>
-		</form>
-	</dialog>
-
 </body>
 
 </html>

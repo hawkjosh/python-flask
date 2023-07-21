@@ -1,13 +1,15 @@
 <div class="comments-list-container">
   {% if comments|length == 0 %}
-  <div class="no-comments-message">
-    No comments posted yet...login and be the first!!
+  <div class="no-comments-msg-wrapper">
+    <div class="no-comments-msg unauth">
+      No comments posted yet...login and be the first!!
+    </div>
   </div>
   {% else %}
   {% for comment in comments|sort(reverse=true, attribute="created_at") %}
-  <div class="comment-card unauth">
-    <div class="comment-text">{{ comment.content }}</div>
-    <div class="comment-info-container">
+  <div class="comment-card">
+    <div class="comment-content unauth">{{ comment.content }}</div>
+    <div class="comment-info-container unauth">
       <div class="comment-subtext">
         Posted by <span class="strong">{{ comment.user.username }}</span> on <span class="strong">{{ comment.created_at|clean_date }}</span>
       </div>

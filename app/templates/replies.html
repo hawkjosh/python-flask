@@ -1,27 +1,12 @@
-{% extends "base.html" %} {% block nav %} {% include 'partials/nav_auth_no_post.html' %}
-{% endblock nav %} {% block content %}
+{% extends "base.html" %}
+
+{% block nav %}
+{% include 'partials/nav_auth_no_post.html' %}
+{% endblock nav %}
+
+{% block content %}
 <div class="comments-list-container">
-	{% if grouped_replies|length == 0 %}
-	<div class="no-comments-msg-wrapper">
-    <div class="no-comments-msg">
-      You have not replied to any comments yet...what are you waiting for?!?
-    </div>
-  </div>
-	{% elif replies|length == 1 and grouped_replies|length == 1 %}
-	<div class="current-user-page-header">
-		You have {{ replies|length }} reply to a comment
-	</div>
-	{% elif replies|length > 1 and grouped_replies|length == 1 %}
-	<div class="current-user-page-header">
-		You have {{ replies|length }} total replies to {{ grouped_replies|length }} comment
-	</div>
-	{% else %}
-	<div class="current-user-page-header">
-		You have {{ replies|length }} total replies to {{ grouped_replies|length }} different comments
-	</div>
-	{% endif %}
-	{% for comment_id, replies in grouped_replies.items() %} {% set comment =
-	replies[0].comment %}
+
 	<div class="{% if comment.user_id == current_user.id %}comment-card curr-user{% else %}comment-card{% endif %}">
 		<div class="comment-content">{{ comment.content }}</div>
 		<div class="comment-info-container">
@@ -34,10 +19,9 @@
 			</div>
 			<div class="comment-counts">
 				<div class="replies-count-wrapper">
-					<a class="{% if comment.replies|length == 0 %}replies-count{% elif comment.user_id == current_user.id %}replies-count curr-user{% else %}replies-count user{% endif %}"
-						href="{{ url_for('replies', comment_id=comment.id) }}" role="button">
+					<span style="cursor: default" class="{% if comment.replies|length == 0 %}replies-count{% elif comment.user_id == current_user.id %}replies-count curr-user{% else %}replies-count user{% endif %}">
 						{{ comment.replies|length|pluralize_reply }}
-					</a>
+					</span>
 					{% if comment.replies %}
 					<div
 						class="{% if comment.user_id == current_user.id %}replies-tooltip curr-user{% else %}replies-tooltip{% endif %}">
@@ -64,18 +48,42 @@
 			</div>
 		</div>
 
+
 		<div class="comment-replies-divider">
 			<hr
 				class="{% if comment.user_id == current_user.id %}comment-replies-divider-line curr-user{% else %}comment-replies-divider-line{% endif %}" />
 		</div>
 
-		<div class="comment-replies-label">Your replies...</div>
-		{% for reply in replies %}
+		{% if not comment.replies %}
+
+		<div class="comment-replies-label">This comment does not have any replies yet...</div>
+		{% else %}
+		<div class="comment-replies-label">Replies...</div>
+		{% for reply in replies|sort(reverse=true, attribute="created_at") %}
 		<div class="comment-reply-content">
-			{{ reply.content }}<span class="comment-reply-subtext"> ({{ reply.created_at|clean_date }})</span>
+			{{ reply.content }}
+			<div class="comment-reply-info-container">
+				<div class="comment-reply-subtext">
+					Reply from
+					<span class="{% if reply.user_id == current_user.id %}strong curr-user{% else %}strong user{% endif %}">{{
+						reply.id|reply_username }}</span>
+					on
+					<span class="strong">{{ reply.created_at|clean_date }}</span>
+					{% if reply.user_id == current_user.id %}
+			<form class="reply-action" action="{{ url_for('delete_reply', reply_id=reply.id) }}" method="POST">
+				<button class="delete-btn" type="submit">
+					<svg viewBox="0 0 40 40" style="width: 2rem">
+						<path
+							d="M10 36q-1.6 0-2.8-1t-1.2-2.5v-23.1h-2v-3.6h10v-1.8h12v1.8h10v3.6h-2v23.1q0 1.5-1.2 2.5t-2.8 1h-20zm20-26.7h-20v23.1h20v-23.1zm-16 19.6h4v-16h-4v16zm8 0h4v-16h-4v16Z" />
+					</svg>
+				</button>
+			</form>
+			{% endif %}
+				</div>
+			</div>
 		</div>
 		{% endfor %}
+		{% endif %}
 	</div>
-	{% endfor %}
 </div>
 {% endblock content %}

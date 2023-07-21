@@ -1,57 +1,191 @@
-{% extends 'base.html' %}
+<html lang="en">
 
-{% block colors %}
-<main>
-  <h1 style="text-decoration: underline; text-align: center; margin-bottom: 2rem">COLOR PALLETTE</h1>
-	<div style="display: flex; justify-content: center; align-items: center; gap: 2rem">
-	  <div style="display: flex; flex-direction: column; gap: 1rem">
-      <h2>Colors:</h2>
-  		<div style="background: var(--color-light); color: var(--color-primary); border: 1px solid black; font-size: 1.25rem; font-weight: 600; text-align: center; padding: 0.75rem">
-        DeepSkyBlue (primary)
-      </div>
-  		<div style="background: var(--color-dark); color: var(--color-secondary); border: 1px solid black; font-size: 1.25rem; font-weight: 600; text-align: center; padding: 0.75rem">
-        LightGray (secondary)
-      </div>
-  		<div style="background: var(--color-dark); color: var(--color-light); border: 1px solid black; font-size: 1.25rem; font-weight: 600; text-align: center; padding: 0.75rem">
-        GhostWhite (light)
-      </div>
-  		<div style="background: var(--color-light); color: var(--color-dark); border: 1px solid black; font-size: 1.25rem; font-weight: 600; text-align: center; padding: 0.75rem">
-        DarkSlateGray (dark)
-      </div>
-  		<div style="background: var(--color-light); color: var(--color-orange); border: 1px solid black; font-size: 1.25rem; font-weight: 600; text-align: center; padding: 0.75rem">
-        Coral (orange)
-      </div>
-  		<div style="background: var(--color-light); color: var(--color-purple); border: 1px solid black; font-size: 1.25rem; font-weight: 600; text-align: center; padding: 0.75rem">
-        RoyalPurple (purple)
-      </div>
-  		<div style="background: var(--color-light); color: var(--color-green); border: 1px solid black; font-size: 1.25rem; font-weight: 600; text-align: center; padding: 0.75rem">
-        LimeGreen (green)
-      </div>
-  	</div>
-  	<div style="display: flex; flex-direction: column; gap: 1rem">
-      <h2>Backgrounds:</h2>
-  		<div style="color: var(--color-light); background: var(--color-primary); border: 1px solid black; font-size: 1.25rem; font-weight: 600; text-align: center; padding: 0.75rem">
-        DeepSkyBlue (primary)
-      </div>
-  		<div style="color: var(--color-dark); background: var(--color-secondary); border: 1px solid black; font-size: 1.25rem; font-weight: 600; text-align: center; padding: 0.75rem">
-        LightGray (secondary)
-      </div>
-  		<div style="color: var(--color-dark); background: var(--color-light); border: 1px solid black; font-size: 1.25rem; font-weight: 600; text-align: center; padding: 0.75rem">
-        GhostWhite (light)
-      </div>
-  		<div style="color: var(--color-light); background: var(--color-dark); border: 1px solid black; font-size: 1.25rem; font-weight: 600; text-align: center; padding: 0.75rem">
-        DarkSlateGray (dark)
-      </div>
-  		<div style="color: var(--color-light); background: var(--color-orange); border: 1px solid black; font-size: 1.25rem; font-weight: 600; text-align: center; padding: 0.75rem">
-        Coral (orange)
-      </div>
-  		<div style="color: var(--color-light); background: var(--color-purple); border: 1px solid black; font-size: 1.25rem; font-weight: 600; text-align: center; padding: 0.75rem">
-        RoyalPurple (purple)
-      </div>
-  		<div style="color: var(--color-light); background: var(--color-green); border: 1px solid black; font-size: 1.25rem; font-weight: 600; text-align: center; padding: 0.75rem">
-        LimeGreen (green)
-      </div>
-  	</div>
-	</div>
-</main>
-{% endblock colors %}
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<link rel="stylesheet" href="../../static/styles/styles.css" />
+
+	<style>
+		.color-palette-page-title {
+			text-align: center;
+			margin-bottom: 1rem;
+		}
+
+		.color-palette-section-title {
+			text-align: center;
+			font-style: italic;
+		}
+
+		.color-palette-section-wrapper {
+			display: flex;
+			justify-content: center;
+			align-items: flex-start;
+			gap: 4rem;
+		}
+
+		.color-palette-section {
+			display: flex;
+			flex-direction: column;
+			gap: 1rem;
+		}
+
+		.color-swatch {
+			border-radius: 0.5rem;
+			box-shadow: 0.125rem 0.125rem 0.25rem hsl(0, 0%, 15%);
+			font-size: 1.25rem;
+			font-weight: 600;
+			padding: 0.75rem;
+			text-align: center;
+			margin-bottom: 1rem;
+
+			&:last-of-type {
+				margin-bottom: 0;
+			}
+		}
+	</style>
+
+	<title>Colors</title>
+</head>
+
+<body>
+	<main>
+		<h1 class="color-palette-page-title">
+			PYTHON-FLASK COLOR PALLETTE
+		</h1>
+		<h2 class="color-palette-section-title">
+			(New Version)
+		</h2>
+		<div class="color-palette-section-wrapper">
+			<div class="color-palette-section">
+				<h2>Colors:</h2>
+				<div id="colorSwatch"></div>
+			</div>
+			<div class="color-palette-section">
+				<h2>Backgrounds:</h2>
+				<div id="bgSwatch"></div>
+			</div>
+		</div>
+	</main>
+
+	<script>
+		const colors = [
+			{
+				name: 'Dark Navy Blue (primary)',
+				color: 'var(--primary-color)',
+				background: 'var(--secondary-color)',
+			},
+			{
+				name: 'Soft White (secondary)',
+				color: 'var(--secondary-color)',
+				background: 'var(--primary-color)',
+			},
+			{
+				name: 'Bright Teal (accent-one)',
+				color: 'var(--accent-color-one)',
+				background: 'var(--accent-color-three)',
+			},
+			{
+				name: 'Warm Orange (accent-two)',
+				color: 'var(--accent-color-two)',
+				background: 'var(--accent-color-three)',
+			},
+			{
+				name: 'Light Gray (accent-three)',
+				color: 'var(--accent-color-three)',
+				background: 'var(--text-color)',
+			},
+			{
+				name: 'Almost Black (text)',
+				color: 'var(--text-color)',
+				background: 'var(--secondary-color)',
+			},
+			{
+				name: 'Medium Gray (subtext)',
+				color: 'var(--subtext-color)',
+				background: 'var(--secondary-color)',
+			},
+			{
+				name: 'Light Teal (hover)',
+				color: 'var(--hover-color)',
+				background: 'var(--primary-color)',
+			},
+		]
+
+		const backgrounds = [
+			{
+				name: 'Dark Navy Blue (primary)',
+				color: 'var(--secondary-color)',
+				background: 'var(--primary-color)',
+			},
+			{
+				name: 'Soft White (secondary)',
+				color: 'var(--primary-color)',
+				background: 'var(--secondary-color)',
+			},
+			{
+				name: 'Bright Teal (accent-one)',
+				color: 'var(--secondary-color)',
+				background: 'var(--accent-color-one)',
+			},
+			{
+				name: 'Warm Orange (accent-two)',
+				color: 'var(--secondary-color)',
+				background: 'var(--accent-color-two)',
+			},
+			{
+				name: 'Light Gray (accent-three)',
+				color: 'var(--primary-color)',
+				background: 'var(--accent-color-three)',
+			},
+			{
+				name: 'Almost Black (text)',
+				color: 'var(--secondary-color)',
+				background: 'var(--text-color)',
+			},
+			{
+				name: 'Medium Gray (subtext)',
+				color: 'var(--secondary-color)',
+				background: 'var(--subtext-color)',
+			},
+			{
+				name: 'Light Teal (hover)',
+				color: 'var(--primary-color)',
+				background: 'var(--hover-color)',
+			},
+		]
+
+		const createColorDivs = () => {
+			const colorSwatch = document.getElementById('colorSwatch')
+			const bgSwatch = document.getElementById('bgSwatch')
+
+			for (let i = 0; i < colors.length; i++) {
+				const color = colors[i]
+
+				const colorDiv = document.createElement('div')
+				colorDiv.textContent = color.name
+				colorDiv.style.color = color.color
+				colorDiv.style.background = color.background
+				colorDiv.classList.add("color-swatch")
+
+				colorSwatch.appendChild(colorDiv)
+			}
+
+			for (let i = 0; i < backgrounds.length; i++) {
+				const background = backgrounds[i]
+
+				const backgroundDiv = document.createElement('div')
+				backgroundDiv.textContent = background.name
+				backgroundDiv.style.color = background.color
+				backgroundDiv.style.background = background.background
+				backgroundDiv.classList.add("color-swatch")
+
+				bgSwatch.appendChild(backgroundDiv)
+			}
+		}
+
+		createColorDivs()
+	</script>
+</body>
+
+</html>

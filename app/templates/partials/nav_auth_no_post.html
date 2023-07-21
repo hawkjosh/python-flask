@@ -1,0 +1,28 @@
+<div class="nav-container">
+  <a class="nav-title" href="{{ url_for('index') }}">
+    Comment Forum
+  </a>
+  <div class="nav-dropdown" id="dropdownTrigger">
+    {{ current_user.username }}
+    <div class="dropdown-list" id="dropdownList">
+      <a class="list-item" href="{{ url_for('index') }}">
+        Home
+      </a>
+      <a class="list-item" href="{{ url_for('user_dashboard') }}">
+        My Dashboard
+      </a>
+      <a class="list-item" href="{{ url_for('user_comments') }}">
+        My Comments
+      </a>
+      <a class="list-item" href="{{ url_for('user_replies') }}">
+        My Replies
+      </a>
+      <a class="list-item" href="{{ url_for('user_likes') }}">
+        My Likes
+      </a>
+      <a class="list-item" href="{{ url_for('logout') }}">
+        Logout
+      </a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,281 @@
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<style>
+		@import url(https://fonts.googleapis.com/css?family=Roboto:400,100,900);
+
+		/* colors/fonts */
+		:root {
+			--gray: slategray;
+			--white: white;
+			--font: 'Roboto', sans-serif;
+		}
+
+		body {
+			background: var(--gray);
+			font-family: var(--font);
+			color: var(--white);
+			text-align: center;
+
+			& hr {
+				width: 15%;
+			}
+		}
+
+		.buttons-container {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: space-evenly;
+
+			/* Button 1 */
+			& .btn-1 {
+				background: darken(var(--gray), 1.5%);
+				font-weight: 100;
+				color: var(--white);
+				cursor: pointer;
+				font-size: 16px;
+				line-height: 45px;
+				margin: 0 0 2em;
+				max-width: 160px;
+				position: relative;
+				text-decoration: none;
+				text-transform: uppercase;
+				width: 100%;
+
+				& svg {
+					height: 45px;
+					left: 0;
+					position: absolute;
+					top: 0;
+					width: 100%;
+
+					& rect {
+						fill: none;
+						stroke: var(--white);
+						stroke-width: 2;
+						stroke-dasharray: 422, 0;
+						transition: all 0.35s linear;
+					}
+				}
+
+				&:hover {
+					background: rgba(var(--gray), 0);
+					font-weight: 900;
+					letter-spacing: 1px;
+					text-decoration: none;
+
+					& rect {
+						stroke-width: 5;
+						stroke-dasharray: 15, 310;
+						stroke-dashoffset: 48;
+						transition: all 1.35s cubic-bezier(0.19, 1, 0.22, 1);
+					}
+				}
+			}
+
+			/* Button 2 */
+			& .btn-2 {
+				line-height: 2.8125rem;
+				height: 2.8125rem;
+				text-align: center;
+				cursor: pointer;
+				width: 100%;
+				text-transform: uppercase;
+				max-width: 10rem;
+				color: var(--white);
+				transition: all 0.375s ease-in-out;
+				position: relative;
+				letter-spacing: 0.25rem;
+				&:hover {
+					letter-spacing: 0.75rem;
+				}
+
+				&::before,
+				&::after {
+					content: '';
+					position: absolute;
+					bottom: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					z-index: 1;
+					transition: all 0.375s ease-in-out;
+				}
+
+				&::before {
+					opacity: 0;
+					border: 0.125rem solid var(--white);
+					border-left: none;
+					border-right: none;
+					transform: scale(0.1, 1);
+				}
+
+				/* Remove below to have only text visible prior to hover effect */
+				&::after {
+					background: hsla(0, 0%, 100%, 0.1);
+				}
+
+				&:hover::before {
+					opacity: 1;
+					transform: scale(1, 1);
+				}
+
+				&:hover::after {
+					opacity: 0;
+				}
+			}
+
+			/* Button 3 */
+			& .btn-3 {
+				border: 1px solid;
+				overflow: hidden;
+				position: relative;
+				color: var(--white);
+				cursor: pointer;
+				font-size: 16px;
+				font-weight: 400;
+				line-height: 45px;
+				margin: 0 0 2em;
+				max-width: 160px;
+				text-decoration: none;
+				text-transform: uppercase;
+				width: 100%;
+
+				&:hover {
+					text-decoration: none;
+				}
+
+				&::after {
+					background: var(--white);
+					content: "";
+					height: 155px;
+					left: -75px;
+					opacity: .2;
+					position: absolute;
+					top: -50px;
+					transform: rotate(35deg);
+					transition: all 1000ms cubic-bezier(0.19, 1, 0.22, 1);
+					width: 50px;
+					z-index: -10;
+				}
+
+				&:hover::after {
+					left: 120%;
+					transition: all 1000ms cubic-bezier(0.19, 1, 0.22, 1);
+				}
+			}
+
+			/* Button 4 */
+			& .btn-4 {
+				border: 0 solid;
+				box-shadow: inset 0 0 20px rgba(255, 255, 255, 0);
+				outline: 1px solid;
+				outline-color: rgba(255, 255, 255, .5);
+				outline-offset: 0px;
+				text-shadow: none;
+				transition: all 1250ms cubic-bezier(0.19, 1, 0.22, 1);
+				color: var(--white);
+				cursor: pointer;
+				font-size: 16px;
+				font-weight: 400;
+				line-height: 45px;
+				margin: 0 0 2em;
+				max-width: 160px;
+				position: relative;
+				text-decoration: none;
+				text-transform: uppercase;
+				width: 100%;
+
+				&:hover {
+					border: 1px solid;
+					box-shadow: inset 0 0 20px rgba(255, 255, 255, .5), 0 0 20px rgba(255, 255, 255, .2);
+					outline-color: rgba(255, 255, 255, 0);
+					outline-offset: 15px;
+					text-shadow: 1px 1px 2px #427388;
+					text-decoration: none;
+				}
+			}
+
+			/* Button 5 */
+			& .btn-5 {
+				padding: 0.5rem 1.25rem;
+				border-radius: 10rem;
+				color: var(--white);
+				text-transform: uppercase;
+				letter-spacing: 0.15rem;
+				font-weight: 500;
+				transition: all 0.375s ease-in-out;
+				position: relative;
+				overflow: hidden;
+				z-index: 1;
+				cursor: pointer;
+				width: 100%;
+				max-width: 10rem;
+				&::after {
+					content: '';
+					position: absolute;
+					bottom: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					background: var(--gray);
+					filter: brightness(115%) contrast(75%);
+					border-radius: 10rem;
+					z-index: -2;
+				}
+				&::before {
+					content: '';
+					position: absolute;
+					bottom: 0;
+					left: 0;
+					width: 0%;
+					height: 100%;
+					background: var(--white);
+					transition: all 0.375s ease-in-out;
+					border-radius: 10rem;
+					z-index: -1;
+				}
+				&:hover {
+					color: var(--gray);
+					&:before {
+						width: 100%;
+					}
+				}
+			}
+		}
+	</style>
+
+	<title>Buttons</title>
+</head>
+
+<body>
+	<div class="buttons-container">
+		<!-- Button 1 -->
+		<div class="btn-1">
+			<svg>
+				<rect x="0" y="0" fill="none" width="100%" height="100%" />
+			</svg>
+			Hover
+		</div>
+		<hr />
+		<!-- Button 2 -->
+		<div class="btn-2">Hover</div>
+		<hr />
+		<!-- Button 3 -->
+		<div class="btn-3">Hover</div>
+		<hr />
+		<!-- Button 4 -->
+		<div class="btn-4">Hover</div>
+		<hr />
+		<!-- Button 5 -->
+		<div class="btn-5">Hover</div>
+	</div>
+</body>
+
+</html>

@@ -1,84 +1,16 @@
-@keyframes tooltip-appear {
-	from {
-		opacity: 0;
-	}
-
-	to {
-		opacity: 1;
-	}
-}
-
-@keyframes tooltip-zoom {
-	from {
-		transform: scale(0);
-	}
-
-	to {
-		transform: scale(1) translate(15%, -85%);
-	}
-}
-
-.login-message-container {
+.login-msg-wrapper {
 	width: 100%;
+	background: var(--accent-color-two);
+	height: 7.5vh;
+	border-radius: 0.375rem;
+	padding: 0.5rem 0.75rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 
-	& .login-message-text {
-		background-color: var(--color-light);
-		color: hsla(354, 70%, 54%, 1);
-		border: 0.125rem solid hsla(354, 70%, 54%, 1);
-		border-radius: 0.375rem;
+	& .login-msg {
+		color: var(--secondary-color);
 		font-size: 1.5rem;
-		font-weight: bold;
-		text-align: center;
-		padding: 0.625rem;
-	}
-
-	& .login-message-actions {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		gap: 1rem;
-		padding: 1rem;
-
-		& .login-btn {
-			background-color: var(--color-primary);
-			color: var(--color-light);
-			text-decoration: none;
-			border-radius: 0.375rem;
-			padding: 0.375rem 0.75rem;
-			font-size: 1.25rem;
-			line-height: 1.875rem;
-
-			&:hover {
-				background-color: hsla(215, 90%, 44%, 1);
-			}
-
-			&:active {
-				background-color: hsla(216, 91%, 42%, 1);
-			}
-		}
-
-		& .register-btn {
-			background-color: var(--color-primary);
-			color: var(--color-light);
-			text-decoration: none;
-			border-radius: 0.375rem;
-			padding: 0.375rem 0.75rem;
-			font-size: 1.25rem;
-			line-height: 1.875rem;
-
-			&:hover {
-				background-color: hsla(215, 90%, 44%, 1);
-			}
-
-			&:active {
-				background-color: hsla(216, 91%, 42%, 1);
-			}
-		}
-	}
-}
-
-.edit-comment-container {
-	& .edit-comment-label {
-		color: var(--color-primary);
+		font-weight: 700;
 	}
 }

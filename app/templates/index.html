@@ -4,14 +4,14 @@
 {% if not current_user.is_authenticated %}
 {% include 'partials/nav_unauth.html' %}
 {% else %}
-{% include 'partials/nav_auth.html' %}
+{% include 'partials/nav_auth_post.html' %}
 {% endif %}
 {% endblock nav %}
 
 {% block content %}
 {% if not current_user.is_authenticated %}
-<div class="login-message-container">
-	<div class="login-message-text">
+<div class="login-msg-wrapper">
+	<div class="login-msg">
 		You must be logged in to interact with the comment forum.
 	</div>
 </div>
