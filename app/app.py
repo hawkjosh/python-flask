@@ -1,4 +1,4 @@
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, jsonify, redirect, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import (
@@ -10,7 +10,7 @@ from flask_login import (
     UserMixin,
 )
 from werkzeug.security import check_password_hash, generate_password_hash
-from sqlalchemy.orm import validates
+from sqlalchemy.orm import validates, joinedload
 from datetime import datetime
 
 app = Flask(__name__, template_folder="./templates")
@@ -359,7 +359,7 @@ def user_dashboard():
 def user_comments():
     if not current_user.is_authenticated:
         return redirect(url_for("index"))
-    
+
     user_id = current_user.id
     comments = Comment.query.filter_by(user_id=user_id).all()
     return render_template("user_comments.html", comments=comments)
@@ -441,7 +441,9 @@ def login():
     if request.method == "POST":
         user = User.query.filter_by(username=request.form["username"]).first()
         if user is None or not user.check_password(request.form["password"]):
-            return render_template("login.html", error=True, error_msg="Incorrect username and/or password")
+            return render_template(
+                "login.html", error=True, error_msg="Incorrect username and/or password"
+            )
 
         login_user(user)
         return redirect(url_for("index"))
@@ -462,7 +464,15 @@ def test():
     replies = Reply.query.all()
     likes = Like.query.all()
 
-    return render_template("test.html", users=users, comments=comments, replies=replies, likes=likes, type="all")
+    return render_template(
+        "test.html",
+        users=users,
+        comments=comments,
+        replies=replies,
+        likes=likes,
+        type="all",
+    )
+
 
 @app.route("/test_user/<int:user_id>", methods=["GET"])
 def test_user(user_id):
@@ -470,11 +480,13 @@ def test_user(user_id):
 
     return render_template("test.html", user=user, type="user")
 
+
 @app.route("/test_comment/<int:comment_id>", methods=["GET"])
 def test_comment(comment_id):
     comment = Comment.query.get(comment_id)
 
     return render_template("test.html", comment=comment, type="comment")
+
 
 @app.route("/test_reply/<int:reply_id>", methods=["GET"])
 def test_reply(reply_id):
@@ -482,11 +494,58 @@ def test_reply(reply_id):
 
     return render_template("test.html", reply=reply, type="reply")
 
+
 @app.route("/test_like/<int:like_id>", methods=["GET"])
 def test_like(like_id):
     like = Like.query.get(like_id)
 
     return render_template("test.html", like=like, type="like")
+
+
+@app.route("/dbtest/<int:user_id>", methods=["GET"])
+def dbtest(user_id):
+    user = User.query.get(user_id)
+
+    if user is None:
+        return jsonify({"message": "User not found"}), 404
+
+    # Get user's comments with replies and likes
+    user_comments = (
+        Comment.query
+        .options(joinedload(Comment.replies).joinedload(Reply.user))
+        .options(joinedload(Comment.likes).joinedload(Like.user))
+        .filter_by(user_id=user.id).all()
+    )
+
+    user_data = {"id": user.id, "username": user.username, "comments": []}
+
+    for comment in user_comments:
+        comment_data = {
+            "id": comment.id,
+            "content": comment.content,
+            "created_at": comment.created_at,
+            "replies": [],
+            "likes": [],
+        }
+
+        # Get replies for each comment
+        for reply in comment.replies:
+            reply_data = {
+                "id": reply.id,
+                "content": reply.content,
+                "username": reply.user.username,
+                "created_at": reply.created_at,
+            }
+            comment_data["replies"].append(reply_data)
+
+        # Get usernames who have liked the comment
+        for like in comment.likes:
+            comment_data["likes"].append(like.user.username)
+
+        user_data["comments"].append(comment_data)
+
+    # return jsonify(user_data), 200
+    return render_template("dbtest.html", user_data=user_data)
 
 
 if __name__ == "__main__":

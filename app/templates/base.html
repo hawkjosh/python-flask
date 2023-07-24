@@ -7,6 +7,7 @@
 	{% if current_user.is_authenticated %}
 	<script src="../static/javascript/helpers.js" defer></script>
 	{% endif %}
+	{% block script %}{% endblock script %}
 	<title>Comment Forum</title>
 </head>
 
