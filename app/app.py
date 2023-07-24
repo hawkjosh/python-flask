@@ -69,8 +69,10 @@ class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(4096), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-    created_at = db.Column(db.DateTime, default=datetime.now)
-    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(
+        db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
 
     # Relationships
     user = db.relationship("User", back_populates="comments")
@@ -85,8 +87,10 @@ class Reply(db.Model):
     content = db.Column(db.String(2048), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     comment_id = db.Column(db.Integer, db.ForeignKey("comments.id"))
-    created_at = db.Column(db.DateTime, default=datetime.now)
-    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(
+        db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
+    )
 
     # Relationships
     user = db.relationship("User", back_populates="replies")
@@ -139,30 +143,33 @@ def pluralize_reply(count):
 def comment_username(comment_id):
     comment = Comment.query.get(comment_id)
 
-    if comment.user_id == current_user.id:
-        return "YOU"
-    else:
-        return comment.user.username
+    if current_user.is_authenticated:
+        if comment.user_id == current_user.id:
+            return "YOU"
+        else:
+            return comment.user.username
 
 
 @app.template_filter("reply_username")
 def reply_username(reply_id):
     reply = Reply.query.get(reply_id)
 
-    if reply.user_id == current_user.id:
-        return "YOU"
-    else:
-        return reply.user.username
+    if current_user.is_authenticated:
+        if reply.user_id == current_user.id:
+            return "YOU"
+        else:
+            return reply.user.username
 
 
 @app.template_filter("like_username")
 def like_username(like_id):
     like = Like.query.get(like_id)
 
-    if like.user_id == current_user.id:
-        return "YOU"
-    else:
-        return like.user.username
+    if current_user.is_authenticated:
+        if like.user_id == current_user.id:
+            return "YOU"
+        else:
+            return like.user.username
 
 
 @app.template_filter("clean_date")
@@ -176,18 +183,42 @@ def index():
         comments = Comment.query.all()
         replies = Reply.query.all()
         likes = Like.query.all()
+
+        if not current_user.is_authenticated:
+            return render_template(
+                "index.html",
+                comments=comments,
+                replies=replies,
+                likes=likes,
+                current_page="index",
+                unauth=True,
+                unauth_msg="You must be logged in to interact with the comment forum.",
+            )
+
+        if not comments:
+            return render_template(
+                "index.html",
+                no_comments=True,
+                no_comments_msg="No comments posted yet...be the first!!",
+            )
+
         return render_template(
-            "index.html", comments=comments, replies=replies, likes=likes
+            "index.html",
+            comments=comments,
+            replies=replies,
+            likes=likes,
+            current_page="index",
         )
 
-    if not current_user.is_authenticated:
-        return redirect(url_for("index"))
+    if request.method == "POST":
+        if not current_user.is_authenticated:
+            return redirect(url_for("index"))
 
-    comment_content = request.form.get("contents")
-    comment = Comment(content=comment_content, user=current_user)
-    db.session.add(comment)
-    db.session.commit()
-    return redirect(url_for("index"))
+        comment_content = request.form.get("contents")
+        comment = Comment(content=comment_content, user=current_user)
+        db.session.add(comment)
+        db.session.commit()
+        return redirect(url_for("index"))
 
 
 @app.route("/comment/edit/<int:comment_id>", methods=["GET", "POST"])
@@ -290,8 +321,31 @@ def like_comment(comment_id):
     return redirect(url_for("index"))
 
 
+# @app.route("/comment/like/<int:comment_id>", methods=["POST"])
+# @login_required
+# def like_comment(comment_id):
+#     comment = Comment.query.get(comment_id)
+#     like = Like(comment_id=comment_id, user_id=current_user.id, value=True)
+#     db.session.add(like)
+#     db.session.commit()
+#     return redirect(url_for("index"))
+
+
+# @app.route("/comment/unlike/<int:comment_id>", methods=["POST"])
+# @login_required
+# def unlike_comment(comment_id):
+#     comment = Comment.query.get(comment_id)
+#     like = Like.query.filter_by(comment_id=comment_id, user_id=current_user.id).first()
+#     db.session.delete(like)
+#     db.session.commit()
+#     return redirect(url_for("index"))
+
+
 @app.route("/user/dashboard", methods=["GET"])
 def user_dashboard():
+    if not current_user.is_authenticated:
+        return redirect(url_for("index"))
+
     user_id = current_user.id
     comments = Comment.query.filter_by(user_id=user_id).all()
     replies = Reply.query.filter_by(user_id=user_id).all()
@@ -303,6 +357,9 @@ def user_dashboard():
 
 @app.route("/user/comments", methods=["GET"])
 def user_comments():
+    if not current_user.is_authenticated:
+        return redirect(url_for("index"))
+    
     user_id = current_user.id
     comments = Comment.query.filter_by(user_id=user_id).all()
     return render_template("user_comments.html", comments=comments)
@@ -310,6 +367,9 @@ def user_comments():
 
 @app.route("/user/replies", methods=["GET"])
 def user_replies():
+    if not current_user.is_authenticated:
+        return redirect(url_for("index"))
+
     user_id = current_user.id
     replies = (
         Reply.query.filter_by(user_id=user_id).order_by(Reply.created_at.desc()).all()
@@ -330,6 +390,9 @@ def user_replies():
 
 @app.route("/user/likes", methods=["GET"])
 def user_likes():
+    if not current_user.is_authenticated:
+        return redirect(url_for("index"))
+
     user_id = current_user.id
     likes = Like.query.filter_by(user_id=user_id).all()
     return render_template("user_likes.html", likes=likes)
@@ -338,44 +401,50 @@ def user_likes():
 @app.route("/register/", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
-        return render_template("register.html", error=False)
+        if current_user.is_authenticated:
+            return redirect(url_for("index"))
+        return render_template("register.html")
 
-    username = request.form["username"]
-    password = request.form["password"]
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
 
-    if User.query.filter_by(username=username).first():
-        return render_template(
-            "register.html",
-            error=True,
-            error_message="There is already a registered user with that username. Please try again.",
-        )
+        if User.query.filter_by(username=username).first():
+            return render_template(
+                "register.html",
+                error=True,
+                error_msg="There is already a registered user with that username. Please try again.",
+            )
 
-    if username == "" or password == "":
-        return render_template(
-            "register.html",
-            error=True,
-            error_message="Username and/or password cannot be blank. Please try again.",
-        )
+        if username == "" or password == "":
+            return render_template(
+                "register.html",
+                error=True,
+                error_msg="Username and/or password cannot be blank. Please try again.",
+            )
 
-    user = User(username=username)
-    user.set_password(password)
-    db.session.add(user)
-    db.session.commit()
-    login_user(user)
-    return redirect(url_for("index"))
+        user = User(username=username)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+        login_user(user)
+        return redirect(url_for("index"))
 
 
 @app.route("/login/", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
-        return render_template("login.html", error=False)
+        if current_user.is_authenticated:
+            return redirect(url_for("index"))
+        return render_template("login.html")
 
-    user = User.query.filter_by(username=request.form["username"]).first()
-    if user is None or not user.check_password(request.form["password"]):
-        return render_template("login.html", error=True)
+    if request.method == "POST":
+        user = User.query.filter_by(username=request.form["username"]).first()
+        if user is None or not user.check_password(request.form["password"]):
+            return render_template("login.html", error=True, error_msg="Incorrect username and/or password")
 
-    login_user(user)
-    return redirect(url_for("index"))
+        login_user(user)
+        return redirect(url_for("index"))
 
 
 @app.route("/logout/")
@@ -383,6 +452,41 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("index"))
+
+
+# PIN -> For database query testing purposes...
+@app.route("/test", methods=["GET"])
+def test():
+    users = User.query.all()
+    comments = Comment.query.all()
+    replies = Reply.query.all()
+    likes = Like.query.all()
+
+    return render_template("test.html", users=users, comments=comments, replies=replies, likes=likes, type="all")
+
+@app.route("/test_user/<int:user_id>", methods=["GET"])
+def test_user(user_id):
+    user = User.query.get(user_id)
+
+    return render_template("test.html", user=user, type="user")
+
+@app.route("/test_comment/<int:comment_id>", methods=["GET"])
+def test_comment(comment_id):
+    comment = Comment.query.get(comment_id)
+
+    return render_template("test.html", comment=comment, type="comment")
+
+@app.route("/test_reply/<int:reply_id>", methods=["GET"])
+def test_reply(reply_id):
+    reply = Reply.query.get(reply_id)
+
+    return render_template("test.html", reply=reply, type="reply")
+
+@app.route("/test_like/<int:like_id>", methods=["GET"])
+def test_like(like_id):
+    like = Like.query.get(like_id)
+
+    return render_template("test.html", like=like, type="like")
 
 
 if __name__ == "__main__":

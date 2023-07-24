@@ -58,6 +58,7 @@ body {
 		padding: 1rem;
 
 		& .nav-container {
+			width: 100%;
 			max-width: 64rem;
 			margin: auto;
 			display: flex;
@@ -65,7 +66,8 @@ body {
 			align-items: center;
 
 			& .nav-title {
-				font-size: 1.75rem;
+				flex: calc(100% / 3);
+				font-size: 1.5rem;
 				font-weight: 500;
 				letter-spacing: 0.125rem;
 				color: var(--accent-color-one);
@@ -74,9 +76,13 @@ body {
 				&:hover {
 					color: var(--hover-color);
 				}
+				@media (width < 49rem) {
+					display: none;
+				}
 			}
 
 			& .new-comment-btn {
+				flex: calc(100% / 3);
 				font-weight: 300;
 				color: var(--accent-color-one);
 				cursor: pointer;
@@ -89,6 +95,9 @@ body {
 				width: 100%;
 				text-align: center;
 				transition: all 0.375s linear;
+				@media (width < 49rem) {
+					font-size: 1rem;
+				}
 
 				& svg {
 					height: 2.5rem;
@@ -121,7 +130,7 @@ body {
 			}
 
 			& .nav-dropdown {
-				flex: 0.25;
+				flex: calc(100% / 3);
 				position: relative;
 				font-size: 1.25rem;
 				font-weight: 500;
@@ -135,19 +144,21 @@ body {
 				&:hover {
 					color: var(--hover-color);
 				}
-
+				@media (width < 49rem) {
+					width: 100%;
+				}
 				& .dropdown-list {
 					display: none;
 					flex-direction: column;
 					align-items: center;
 					justify-content: center;
 					position: absolute;
+					right: 0;
 					transform: translateY(5%);
 					background: var(--hover-color);
 					border: none;
 					border-radius: 0.5rem;
 					z-index: 1;
-					width: 100%;
 					box-shadow: var(--dropdown-shadow);
 
 					& .list-item {
@@ -185,6 +196,8 @@ body {
 				font-size: 1.25rem;
 				color: var(--accent-color-one);
 				text-decoration: none;
+				text-align: right;
+				flex: 1;
 				&:hover {
 					color: var(--hover-color);
 				}
@@ -192,15 +205,20 @@ body {
 		}
 
 		& .new-comment-modal {
-			width: 75%;
-			height: 50vh;
+			width: 80%;
+			height: 60vh;
 			margin: auto;
 			border: none;
 			border-radius: 0.5rem;
-			padding: 2rem 4rem;
+			padding: 2rem 2.25rem;
 			&::backdrop {
 				/* background: hsla(var(--primary-color-hsl), 0.5); */
 				background: hsla(204, 100%, 12%, 0.5);
+			}
+			@media (width < 49rem) {
+				width: 90%;
+				padding: 1.5rem 1.75rem;
+				height: 75%;
 			}
 
 			& .new-comment-form {
@@ -227,6 +245,9 @@ body {
 					&::placeholder {
 						color: var(--subtext-color);
 					}
+					@media (width < 49rem) {
+						font-size: 1.125rem;
+					}		
 				}
 
 				& .new-comment-actions {

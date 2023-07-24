@@ -1,19 +1,11 @@
 {% extends "base.html" %}
 
-{% block nav %}
-<div class="nav-container">
-  <a class="nav-title" href="{{ url_for('index') }}">
-    Comment Forum
-  </a>
-</div>
-{% endblock nav %}
-
 {% block content %}
 {% if error %}
 <dialog class="auth-error-container" open>
 	<form class="auth-error-content-wrapper" method="dialog">
 		<div class="auth-error-msg">
-			Incorrect username and/or password
+			{{ error_msg }}
 		</div>
 		<button class="auth-error-close-btn">
 			Close

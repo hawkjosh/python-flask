@@ -1,0 +1,88 @@
+<div class="comments-list-container">
+  {% if no_comments %}
+  <div class="no-comments-msg-wrapper">
+    <div class="{% if not current_user.is_authenticated %}no-comments-msg unauth{% else %}no-comments-msg{% endif %}">
+      {{ no_comments_msg }}
+    </div>
+  </div>
+  {% endif %}
+  {% for comment in comments|sort(reverse=true, attribute="created_at") %}
+  <div class="{% if comment.user_id == current_user.id %}comment-card curr-user{% else %}comment-card{% endif %}" data-comment-id="{{ comment.id }}" data-comment-content="{{ comment.content }}" data-comment-username="{{ comment.id|comment_username }}" data-comment-date="{{ comment.created_at|clean_date }}">
+    <div class="{% if not current_user.is_authenticated %}comment-content unauth{% else %}comment-content{% endif %}">{{ comment.content }}</div>
+    <div class="{% if not current_user.is_authenticated %}comment-info-container unauth{% else %}comment-info-container{% endif %}">
+      <div class="comment-info">
+        <div class="comment-subtext">
+          Posted by <span
+            class="{% if comment.user_id == current_user.id %}strong curr-user{% else %}strong user{% endif %}">{{
+            comment.id|comment_username }}</span> on <span class="strong">{{ comment.created_at|clean_date }}</span>
+        </div>
+        <div class="comment-counts">
+          <div class="replies-count-wrapper">
+            <a class="{% if comment.replies|length == 0 %}replies-count{% elif comment.user_id == current_user.id %}replies-count curr-user{% else %}replies-count user{% endif %}"
+              href="{{ url_for('replies', comment_id=comment.id) }}" role="button">
+              {{ comment.replies|length|pluralize_reply }}
+            </a>
+            {% if comment.replies %}
+            <div
+              class="{% if comment.user_id == current_user.id %}replies-tooltip curr-user{% else %}replies-tooltip{% endif %}">
+              {% for reply in comment.replies %}
+              <span class="reply-username">{{ reply.id|reply_username }}</span>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          <span class="count-divider">|</span>
+          <div class="likes-count-wrapper">
+            <span
+              class="{% if comment.likes|length == 0 %}likes-count{% elif comment.user_id == current_user.id %}likes-count curr-user{% else %}likes-count user{% endif %}">
+              {{ comment.likes|length|pluralize_like }}
+            </span>
+            {% if comment.likes %}
+            <div
+              class="{% if comment.user_id == current_user.id %}likes-tooltip curr-user{% else %}likes-tooltip{% endif %}">
+              {% for like in comment.likes %}
+              <span class="likes-username">{{ like.id|like_username }}</span>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="comment-actions">
+        <div class="action-btn-wrapper">
+          <span class="action-tooltip reply">Reply</span>
+          <button class="action-btn reply" type="button" data-comment-reply-open="{{ comment.id }}" />
+        </div>
+        {% if comment.user_id != current_user.id %}
+        <div class="action-btn-wrapper">
+          <span class="action-tooltip like">Like</span>
+          <form action="{{ url_for('like_comment', comment_id=comment.id) }}" method="POST">
+            <button class="action-btn like" type="submit" />
+          </form>
+        </div>
+        <!-- <div class="action-btn-wrapper">
+          <span class="action-tooltip unlike">Unlike</span>
+          <form action="{# {{ url_for('unlike_comment', comment_id=comment.id) }} #}" method="POST">
+            <button class="action-btn unlike" type="submit" />
+          </form>
+        </div> -->
+        {% else %}
+        <div class="action-btn-wrapper">
+          <span class="action-tooltip edit">Edit</span>
+          <button class="action-btn edit" type="button" data-comment-edit-open="{{ comment.id }}" />
+        </div>
+        <div class="action-btn-wrapper">
+          <span class="action-tooltip delete">Delete</span>
+          <form action="{{ url_for('delete_comment', comment_id=comment.id) }}" method="POST">
+            <button class="action-btn delete" type="submit" />
+          </form>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% include "partials/reply_comment.html" %}
+  {% include "partials/edit_comment.html" %}
+{% endfor %}
+</div>

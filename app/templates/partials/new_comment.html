@@ -1,0 +1,12 @@
+{% if current_user.is_authenticated %}
+<dialog class="new-comment-modal" data-new-comment>
+  <form class="new-comment-form" action="." method="POST">
+    <textarea class="new-comment-textbox" name="contents" placeholder="Post a new comment..."
+      data-new-comment-text></textarea>
+    <div class="new-comment-actions">
+      <input class="action-btn post" type="submit" value="Post" />
+      <input class="action-btn cancel" type="submit" formmethod="dialog" value="Cancel" data-new-comment-close />
+    </div>
+  </form>
+</dialog>
+{% endif %}

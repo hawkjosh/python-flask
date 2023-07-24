@@ -1,9 +1,5 @@
 {% extends "base.html" %}
 
-{% block nav %}
-{% include 'partials/nav_auth_no_post.html' %}
-{% endblock nav %}
-
 {% block content %}
 <div class="comments-list-container">
 	{% if comments|length == 0 %}
@@ -25,38 +21,40 @@
 	<div class="comment-card curr-user">
 		<div class="comment-content">{{ comment.content }}</div>
 		<div class="comment-info-container">
-			<div class="comment-subtext">
-				Posted on <span class="strong">{{ comment.created_at|clean_date }}</span>
-			</div>
-			<div class="comment-counts">
-				<div class="replies-count-wrapper">
-					<a
-						class="replies-count curr-user"
-						href="{{ url_for('replies', comment_id=comment.id) }}"
-						role="button">
-						{{ comment.replies|length|pluralize_reply }}
-					</a>
-					{% if comment.replies %}
-					<div class="replies-tooltip curr-user">
-						{% for reply in comment.replies %}
-						<span class="reply-username">{{ reply.id|reply_username }}</span>
-						{% endfor %}
-					</div>
-					{% endif %}
+			<div class="comment-info">
+				<div class="comment-subtext">
+					Posted on <span class="strong">{{ comment.created_at|clean_date }}</span>
 				</div>
-				<span class="count-divider">|</span>
-				<div class="likes-count-wrapper">
-					<span
-						class="likes-count curr-user">
-						{{ comment.likes|length|pluralize_like }}
-					</span>
-					{% if comment.likes %}
-					<div class="likes-tooltip curr-user">
-						{% for like in comment.likes %}
-						<span class="likes-username">{{ like.id|like_username }}</span>
-						{% endfor %}
+				<div class="comment-counts">
+					<div class="replies-count-wrapper">
+						<a
+							class="replies-count curr-user"
+							href="{{ url_for('replies', comment_id=comment.id) }}"
+							role="button">
+							{{ comment.replies|length|pluralize_reply }}
+						</a>
+						{% if comment.replies %}
+						<div class="replies-tooltip curr-user">
+							{% for reply in comment.replies %}
+							<span class="reply-username">{{ reply.id|reply_username }}</span>
+							{% endfor %}
+						</div>
+						{% endif %}
 					</div>
-					{% endif %}
+					<span class="count-divider">|</span>
+					<div class="likes-count-wrapper">
+						<span
+							class="likes-count curr-user">
+							{{ comment.likes|length|pluralize_like }}
+						</span>
+						{% if comment.likes %}
+						<div class="likes-tooltip curr-user">
+							{% for like in comment.likes %}
+							<span class="likes-username">{{ like.id|like_username }}</span>
+							{% endfor %}
+						</div>
+						{% endif %}
+					</div>
 				</div>
 			</div>
 		</div>
