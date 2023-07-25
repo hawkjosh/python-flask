@@ -540,7 +540,11 @@ def dbtest(user_id):
 
         # Get usernames who have liked the comment
         for like in comment.likes:
-            comment_data["likes"].append(like.user.username)
+            like_data = {
+                "id": like.user.id,
+                "username": like.user.username,
+            }
+            comment_data["likes"].append(like_data)
 
         user_data["comments"].append(comment_data)
 
