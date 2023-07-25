@@ -3,7 +3,6 @@
 {% block script %}
 <style>
   .dbt-title-wrapper {
-    width: calc(100% * 2/3);
     border-bottom-width: 0.5rem;
     border-bottom-style: dotted;
     border-bottom-color: blue;
@@ -12,7 +11,7 @@
 
     & .dbt-title {
       text-align: center;
-      font-size: 2.25rem;
+      font-size: clamp(1.25rem, 1rem + 2vw, 2.25rem);
       font-weight: 600;
 
       & .dbt-title-username {
@@ -26,7 +25,15 @@
   }
 
   & .dbt-user-stats-container {
-    text-align: center;
+    outline: 1px solid red;
+    display: flex;
+    justify-content: center;
+    gap: clamp(2rem, 1rem + 2vw, 8rem);
+    padding: 0.25rem 0.5rem;
+
+    & .dbt-user-stat {
+      text-align: center;
+    }
   }
 
   & .dbt-comment-container {
@@ -186,76 +193,156 @@
     <span class="dbt-title-username">
       {{user_data.username}}
     </span>
-    </d>
   </div>
+</div>
 
-  <div class="dbt-user-stats-container">
-    Your comment forum stats...
+<div class="dbt-user-stats-container">
+  <div class="dbt-user-stat">
+    Comments: {{ comments|length }}
   </div>
+  <div class="dbt-user-stat">
+    Replies: {{ replies|length }}
+  </div>
+  <div class="dbt-user-stat">
+    Likes: {{ likes|length }}
+  </div>
+</div>
 
-  {% for comment in user_data.comments %}
-  <div class="dbt-comment-container">
-    <div class="dbt-comment-content-wrapper">
-      <div class="dbt-comment-text">
-        {{comment.content}}
+{% if type == "comments" %}
+{% for comment in user_data.comments %}
+<div class="dbt-comment-container">
+  <div class="dbt-comment-content-wrapper">
+    <div class="dbt-comment-text">
+      {{comment.content}}
+    </div>
+    <div class="dbt-comment-info-wrapper">
+      <div class="dbt-comment-post-info">
+        Posted on
+        <span class="dbt-strong">
+          {{comment.created_at|clean_date}}
+        </span>
       </div>
-      <div class="dbt-comment-info-wrapper">
-        <div class="dbt-comment-post-info">
-          Posted on
-          <span class="dbt-strong">
-            {{comment.created_at|clean_date}}
-          </span>
+      <div class="dbt-comment-count-wrapper">
+        <div class="dbt-comment-count-info">
+          {{comment.replies|length}} replies
         </div>
-        <div class="dbt-comment-count-wrapper">
-          <div class="dbt-comment-count-info">
-            {{comment.replies|length}} replies
-          </div>
-          <div class="dbt-comment-count-info-divider">
-            ||
-          </div>
-          <div class="dbt-comment-count-info">
-            {{comment.likes|length}} likes
-          </div>
+        <div class="dbt-comment-count-info-divider">
+          ||
+        </div>
+        <div class="dbt-comment-count-info">
+          {{comment.likes|length}} likes
         </div>
       </div>
     </div>
-    <hr class="dbt-comment-horizontal-divider">
-    <div class="dbt-reply-container">
-      <div class="dbt-reply-heading">Replies...</div>
-      <div class="dbt-reply-card-container">
-        {% for reply in comment.replies %}
-        <div class="dbt-reply-card">
-          <div class="dbt-reply-content-wrapper">
-            <div class="dbt-reply-text">{{ reply.content }}</div>
-            <div class="dbt-reply-subtext">
-              Reply from
-              <span class="dbt-strong">
-                {{ reply.username }}
-              </span>
-              on
-              <span class="dbt-strong">
-                {{ reply.created_at|clean_date }}
-              </span>
-            </div>
+  </div>
+  <hr class="dbt-comment-horizontal-divider">
+  <div class="dbt-reply-container">
+    <div class="dbt-reply-heading">Replies...</div>
+    <div class="dbt-reply-card-container">
+      {% for reply in comment.replies %}
+      <div class="dbt-reply-card">
+        <div class="dbt-reply-content-wrapper">
+          <div class="dbt-reply-text">{{ reply.content }}</div>
+          <div class="dbt-reply-subtext">
+            Reply from
+            <span class="dbt-strong">
+              {{ reply.username }}
+            </span>
+            on
+            <span class="dbt-strong">
+              {{ reply.created_at|clean_date }}
+            </span>
           </div>
         </div>
-        {% endfor %}
       </div>
+      {% endfor %}
     </div>
-    <hr class="dbt-comment-card-horizontal-divider">
-    <div class="dbt-like-container">
-      <div class="dbt-like-heading">Likes...</div>
-      <div class="dbt-like-content-wrapper">
-        {% for like in comment.likes %}
-        <a class="dbt-like-username-btn" href="{{ url_for('dbtest', user_id=like.id) }}">
-          <div class="dbt-like-username">
-            {{ like.username }}
-          </div>
-        </a>
-        {% endfor %}
+  </div>
+  <hr class="dbt-comment-card-horizontal-divider">
+  <div class="dbt-like-container">
+    <div class="dbt-like-heading">Likes...</div>
+    <div class="dbt-like-content-wrapper">
+      {% for like in comment.likes %}
+      <a class="dbt-like-username-btn" href="{{ url_for('dbtest_comments', user_id=like.id) }}">
+        <div class="dbt-like-username">
+          {{ like.username }}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+{% elif type == "replies" %}
+{% for comment in user_data.replies %}
+<div class="dbt-comment-container">
+  <div class="dbt-comment-content-wrapper">
+    <div class="dbt-comment-text">
+      {{comment.content}}
+    </div>
+    <div class="dbt-comment-info-wrapper">
+      <div class="dbt-comment-post-info">
+        Posted by
+        <span class="dbt-strong">
+          {{comment.username}}
+        </span>
+        on
+        <span class="dbt-strong">
+          {{comment.created_at|clean_date}}
+        </span>
+      </div>
+      <div class="dbt-comment-count-wrapper">
+        <div class="dbt-comment-count-info">
+          {{comment.replies|length}} replies
+        </div>
+        <div class="dbt-comment-count-info-divider">
+          ||
+        </div>
+        <div class="dbt-comment-count-info">
+          {{comment.likes|length}} likes
+        </div>
       </div>
     </div>
   </div>
-  {% endfor %}
+  <hr class="dbt-comment-horizontal-divider">
+  <div class="dbt-reply-container">
+    <div class="dbt-reply-heading">Replies...</div>
+    <div class="dbt-reply-card-container">
+      {% for reply in comment.replies %}
+      <div class="dbt-reply-card">
+        <div class="dbt-reply-content-wrapper">
+          <div class="dbt-reply-text">{{ reply.reply_content }}</div>
+          <div class="dbt-reply-subtext">
+            Reply from
+            <span class="dbt-strong">
+              {{ reply.reply_username }}
+            </span>
+            on
+            <span class="dbt-strong">
+              {{ reply.reply_created_at|clean_date }}
+            </span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <hr class="dbt-comment-card-horizontal-divider">
+  <div class="dbt-like-container">
+    <div class="dbt-like-heading">Likes...</div>
+    <div class="dbt-like-content-wrapper">
+      {% for like in comment.likes %}
+      <a class="dbt-like-username-btn" href="{{ url_for('dbtest_comments', user_id=like.id) }}">
+        <div class="dbt-like-username">
+          {{ like.username }}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endfor %}
+{% endif %}
 
-  {% endblock content %}
+{% endblock content %}
