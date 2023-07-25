@@ -1,0 +1,218 @@
+.dbt-title-wrapper {
+	border-bottom-width: 0.5rem;
+	border-bottom-style: dotted;
+	border-bottom-color: blue;
+	margin: auto;
+	padding-bottom: 1rem;
+
+	& .dbt-title {
+		text-align: center;
+		font-size: clamp(1.25rem, 1.25rem + 2vw, 2.25rem);
+		font-weight: 600;
+
+		& .dbt-title-username {
+			color: blue;
+			font-weight: 900;
+			background: yellow;
+			padding: 0.25rem 0.5rem;
+			border-radius: 0.25rem;
+		}
+	}
+}
+
+.dbt-user-stats-container {
+	outline: 0.25rem solid blue;
+	width: max-content;
+	margin: auto;
+	border-radius: 0.25rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: clamp(2rem, 2rem + 2vw, 4rem);
+	padding: 0.25rem 0.75rem;
+
+	& .dbt-user-stat {
+		text-align: center;
+		font-size: 1.25rem;
+		font-weight: 600;
+		color: blue;
+		padding: 0.125rem 0.25rem;
+		&.highlight {
+			background: yellow;
+		}
+	}
+}
+
+.dbt-user-type-heading {
+	font-size: 1.5rem;
+	font-weight: 600;
+	width: max-content;
+
+  & .dbt-user-type-heading-username {
+    background: yellow;
+    color: blue;
+    padding: 0.25rem 0.375rem;
+  }
+}
+
+.dbt-comment-container {
+	border: 0.0625rem solid blue;
+	border-radius: 0.75rem;
+	padding: 0.5rem 0.75rem;
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+	&.highlight {
+		background: yellow;
+	}
+
+	& .dbt-comment-content-wrapper {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+
+		& .dbt-comment-text {
+			font-size: 1.125rem;
+			font-weight: 500;
+			color: darkslategray;
+		}
+
+		& .dbt-comment-info-wrapper {
+			width: 85%;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-left: 2.5%;
+
+			& .dbt-comment-post-info {
+				font-size: 1rem;
+				font-family: monospace;
+				color: dimgray;
+
+				& .dbt-strong {
+					font-weight: 600;
+					color: hsl(0, 0%, 36%);
+				}
+			}
+
+			& .dbt-comment-count-wrapper {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				gap: 1rem;
+
+				& .dbt-comment-count-info {
+					font-style: italic;
+					font-weight: 500;
+					color: blue;
+				}
+
+				& .dbt-comment-count-info-divider {
+					color: black;
+					font-weight: 700;
+				}
+			}
+		}
+	}
+
+	& .dbt-comment-horizontal-divider {
+		border-bottom-color: blue;
+		border-bottom-width: 0.0625rem;
+		width: 95%;
+		margin: auto;
+	}
+
+	& .dbt-reply-container {
+		display: flex;
+		flex-direction: column;
+		width: 95%;
+		margin: auto;
+		gap: 1.25rem;
+
+		& .dbt-reply-heading {
+			font-size: 1.5rem;
+			font-weight: 500;
+		}
+
+		& .dbt-reply-card-container {
+			display: flex;
+			flex-direction: column;
+			gap: 1rem;
+
+			& .dbt-reply-card {
+				border: 0.0625rem solid blue;
+				border-radius: 0.75rem;
+				padding: 0.5rem 0.75rem;
+				display: flex;
+				flex-direction: column;
+				gap: 1.25rem;
+        background: white;
+        &.highlight {
+          background: yellow;
+        }
+
+				& .dbt-reply-content-wrapper {
+					display: flex;
+					flex-direction: column;
+					gap: 0.625rem;
+
+					& .dbt-reply-text {
+						font-size: 1rem;
+						font-weight: 500;
+						color: darkslategray;
+					}
+
+					& .dbt-reply-subtext {
+						font-size: 0.875rem;
+						font-family: monospace;
+						color: dimgray;
+
+						& .dbt-strong {
+							font-weight: 600;
+							color: hsl(0, 0%, 36%);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	& .dbt-like-container {
+		display: flex;
+		flex-direction: column;
+		width: 95%;
+		margin: auto;
+		gap: 1.25rem;
+
+		& .dbt-like-heading {
+			font-size: 1.5rem;
+			font-weight: 500;
+		}
+
+		& .dbt-like-content-wrapper {
+			display: flex;
+			align-items: center;
+			gap: 3rem;
+
+			& .dbt-like-username-btn {
+				text-decoration: none;
+
+				& .dbt-like-username {
+					border: 0.125rem solid blue;
+					border-radius: 0.75rem;
+					padding: 0.625rem 1rem;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					font-size: 1.25rem;
+					font-weight: 500;
+					color: black;
+          background: white;
+          &.highlight {
+            background: yellow;
+          }
+				}
+			}
+		}
+	}
+}

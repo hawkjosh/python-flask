@@ -22,13 +22,13 @@
       <a class="list-item" href="{{ url_for('user_dashboard') }}">
         My Dashboard
       </a>
-      <a class="list-item" href="{{ url_for('user_comments') }}">
+      <a class="list-item" href="{{ url_for('user_comments', user_id=current_user.id) }}">
         My Comments
       </a>
-      <a class="list-item" href="{{ url_for('user_replies') }}">
+      <a class="list-item" href="{{ url_for('user_replies', user_id=current_user.id) }}">
         My Replies
       </a>
-      <a class="list-item" href="{{ url_for('user_likes') }}">
+      <a class="list-item" href="{{ url_for('user_likes', user_id=current_user.id) }}">
         My Likes
       </a>
       <a class="list-item" href="{{ url_for('logout') }}">

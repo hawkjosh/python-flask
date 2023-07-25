@@ -234,7 +234,7 @@ def edit_comment(comment_id):
         db.session.commit()
         return redirect(url_for("index"))
 
-    return render_template("edit.html", comment=comment)
+    return render_template("edit_comment.html", comment=comment)
 
 
 @app.route("/comment/reply/<int:comment_id>", methods=["GET", "POST"])
@@ -355,47 +355,228 @@ def user_dashboard():
     )
 
 
-@app.route("/user/comments", methods=["GET"])
-def user_comments():
-    if not current_user.is_authenticated:
-        return redirect(url_for("index"))
+# @app.route("/user/comments", methods=["GET"])
+# def user_comments():
+#     if not current_user.is_authenticated:
+#         return redirect(url_for("index"))
 
-    user_id = current_user.id
-    comments = Comment.query.filter_by(user_id=user_id).all()
-    return render_template("user_comments.html", comments=comments)
+#     user_id = current_user.id
+#     comments = Comment.query.filter_by(user_id=user_id).all()
+#     return render_template("user_comments.html", comments=comments)
 
 
-@app.route("/user/replies", methods=["GET"])
-def user_replies():
-    if not current_user.is_authenticated:
-        return redirect(url_for("index"))
+# @app.route("/user/replies", methods=["GET"])
+# def user_replies():
+#     if not current_user.is_authenticated:
+#         return redirect(url_for("index"))
 
-    user_id = current_user.id
-    replies = (
-        Reply.query.filter_by(user_id=user_id).order_by(Reply.created_at.desc()).all()
+#     user_id = current_user.id
+#     replies = (
+#         Reply.query.filter_by(user_id=user_id).order_by(Reply.created_at.desc()).all()
+#     )
+
+#     grouped_replies = {}
+
+#     for reply in replies:
+#         comment_id = reply.comment_id
+#         if comment_id not in grouped_replies:
+#             grouped_replies[comment_id] = []
+#         grouped_replies[comment_id].append(reply)
+
+#     return render_template(
+#         "user_replies.html", grouped_replies=grouped_replies, replies=replies
+#     )
+
+
+# @app.route("/user/likes", methods=["GET"])
+# def user_likes():
+#     if not current_user.is_authenticated:
+#         return redirect(url_for("index"))
+
+#     user_id = current_user.id
+#     likes = Like.query.filter_by(user_id=user_id).all()
+#     return render_template("user_likes.html", likes=likes)
+
+
+@app.route("/user_comments/<int:user_id>", methods=["GET"])
+def user_comments(user_id):
+    user = User.query.get(user_id)
+    comments = Comment.query.filter_by(user_id=user.id).all()
+    replies = Reply.query.filter_by(user_id=user.id).all()
+    likes = Comment.query.filter_by(user_id=user.id).all()
+
+    if user is None:
+        return jsonify({"message": "User not found"}), 404
+
+    user_comments = (
+        Comment.query.options(joinedload(Comment.replies).joinedload(Reply.user))
+        .options(joinedload(Comment.likes).joinedload(Like.user))
+        .filter_by(user_id=user.id)
+        .all()
     )
 
-    grouped_replies = {}
+    user_data = {"id": user.id, "username": user.username, "comments": []}
 
-    for reply in replies:
-        comment_id = reply.comment_id
-        if comment_id not in grouped_replies:
-            grouped_replies[comment_id] = []
-        grouped_replies[comment_id].append(reply)
+    for comment in user_comments:
+        comment_data = {
+            "id": comment.id,
+            "content": comment.content,
+            "created_at": comment.created_at,
+            "replies": [],
+            "likes": [],
+        }
+
+        for reply in comment.replies:
+            reply_data = {
+                "id": reply.id,
+                "content": reply.content,
+                "username": reply.user.username,
+                "created_at": reply.created_at,
+            }
+            comment_data["replies"].append(reply_data)
+
+        for like in comment.likes:
+            like_data = {
+                "id": like.user.id,
+                "username": like.user.username,
+            }
+            comment_data["likes"].append(like_data)
+
+        user_data["comments"].append(comment_data)
 
     return render_template(
-        "user_replies.html", grouped_replies=grouped_replies, replies=replies
+        "user_info.html",
+        user_data=user_data,
+        comments=comments,
+        replies=replies,
+        likes=likes,
+        type="comments",
     )
 
 
-@app.route("/user/likes", methods=["GET"])
-def user_likes():
-    if not current_user.is_authenticated:
-        return redirect(url_for("index"))
+@app.route("/user_replies/<int:user_id>", methods=["GET"])
+def user_replies(user_id):
+    user = User.query.get(user_id)
+    comments = Comment.query.filter_by(user_id=user.id).all()
+    replies = Reply.query.filter_by(user_id=user.id).all()
+    likes = Like.query.filter_by(user_id=user.id).all()
 
-    user_id = current_user.id
-    likes = Like.query.filter_by(user_id=user_id).all()
-    return render_template("user_likes.html", likes=likes)
+    if user is None:
+        return jsonify({"message": "User not found"}), 404
+
+    user_replies = (
+        Reply.query.options(joinedload(Reply.comment).joinedload(Comment.user))
+        .options(
+            joinedload(Reply.comment).joinedload(Comment.likes).joinedload(Like.user)
+        )
+        .filter_by(user_id=user.id)
+        .all()
+    )
+
+    user_data = {"id": user.id, "username": user.username, "replies": []}
+
+    for reply in user_replies:
+        reply_data = {
+            "id": reply.id,
+            "content": reply.content,
+            "created_at": reply.created_at,
+            "comment": {
+                "id": reply.comment.id,
+                "content": reply.comment.content,
+                "username": reply.comment.user.username,
+                "created_at": reply.comment.created_at,
+                "total_replies": len(reply.comment.replies),
+                "total_likes": len(reply.comment.likes),
+                "replies": [],  # Placeholder for nested replies
+                "likes": [],  # Placeholder for likes on the comment
+            },
+        }
+
+        for reply in reply.comment.replies:
+            comment_reply_data = {
+                "reply_content": reply.content,
+                "reply_username": reply.user.username,
+                "reply_created_at": reply.created_at,
+            }
+            reply_data["comment"]["replies"].append(comment_reply_data)
+
+        for like in reply.comment.likes:
+            comment_like_data = {
+                "id": like.user.id,
+                "username": like.user.username,
+            }
+            reply_data["comment"]["likes"].append(comment_like_data)
+
+        user_data["replies"].append(reply_data)
+
+    return render_template(
+        "user_info.html",
+        user_data=user_data,
+        comments=comments,
+        replies=replies,
+        likes=likes,
+        type="replies",
+    )
+
+
+@app.route("/user_likes/<int:user_id>", methods=["GET"])
+def user_likes(user_id):
+    user = User.query.get(user_id)
+    comments = Comment.query.filter_by(user_id=user.id).all()
+    replies = Reply.query.filter_by(user_id=user.id).all()
+    likes = Like.query.filter_by(user_id=user.id).all()
+
+    if user is None:
+        return jsonify({"message": "User not found"}), 404
+
+    user_likes = (
+        Like.query.options(joinedload(Like.comment).joinedload(Comment.user))
+        .options(
+            joinedload(Like.comment).joinedload(Comment.replies).joinedload(Reply.user)
+        )
+        .filter_by(user_id=user.id)
+        .all()
+    )
+
+    user_data = {"id": user.id, "username": user.username, "likes": []}
+
+    for like in user_likes:
+        like_data = {
+            "id": like.comment.id,
+            "content": like.comment.content,
+            "username": like.comment.user.username,
+            "created_at": like.comment.created_at,
+            "total_replies": len(like.comment.replies),
+            "total_likes": len(like.comment.likes),
+            "replies": [],  # Placeholder for nested replies
+            "likes": [],  # Placeholder for likes on the comment
+        }
+
+        for reply in like.comment.replies:
+            comment_reply_data = {
+                "content": reply.content,
+                "username": reply.user.username,
+                "created_at": reply.created_at,
+            }
+            like_data["replies"].append(comment_reply_data)
+
+        for like in like.comment.likes:
+            comment_like_data = {
+                "id": like.user.id,
+                "username": like.user.username,
+            }
+            like_data["likes"].append(comment_like_data)
+
+        user_data["likes"].append(like_data)
+
+    return render_template(
+        "user_info.html",
+        user_data=user_data,
+        comments=comments,
+        replies=replies,
+        likes=likes,
+        type="likes",
+    )
 
 
 @app.route("/register/", methods=["GET", "POST"])
@@ -454,233 +635,6 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for("index"))
-
-
-# PIN -> For database query testing purposes...
-@app.route("/test", methods=["GET"])
-def test():
-    users = User.query.all()
-    comments = Comment.query.all()
-    replies = Reply.query.all()
-    likes = Like.query.all()
-
-    return render_template(
-        "test.html",
-        users=users,
-        comments=comments,
-        replies=replies,
-        likes=likes,
-        type="all",
-    )
-
-
-@app.route("/test_user/<int:user_id>", methods=["GET"])
-def test_user(user_id):
-    user = User.query.get(user_id)
-
-    return render_template("test.html", user=user, type="user")
-
-
-@app.route("/test_comment/<int:comment_id>", methods=["GET"])
-def test_comment(comment_id):
-    comment = Comment.query.get(comment_id)
-
-    return render_template("test.html", comment=comment, type="comment")
-
-
-@app.route("/test_reply/<int:reply_id>", methods=["GET"])
-def test_reply(reply_id):
-    reply = Reply.query.get(reply_id)
-
-    return render_template("test.html", reply=reply, type="reply")
-
-
-@app.route("/test_like/<int:like_id>", methods=["GET"])
-def test_like(like_id):
-    like = Like.query.get(like_id)
-
-    return render_template("test.html", like=like, type="like")
-
-
-@app.route("/dbtest_comments/<int:user_id>", methods=["GET"])
-def dbtest_comments(user_id):
-    user = User.query.get(user_id)
-    comments = Comment.query.filter_by(user_id=user.id).all()
-    replies = Reply.query.filter_by(user_id=user.id).all()
-    likes = Comment.query.filter_by(user_id=user.id).all()
-
-    if user is None:
-        return jsonify({"message": "User not found"}), 404
-
-    # Get user's comments with replies and likes
-    user_comments = (
-        Comment.query.options(joinedload(Comment.replies).joinedload(Reply.user))
-        .options(joinedload(Comment.likes).joinedload(Like.user))
-        .filter_by(user_id=user.id)
-        .all()
-    )
-
-    user_data = {"id": user.id, "username": user.username, "comments": []}
-
-    for comment in user_comments:
-        comment_data = {
-            "id": comment.id,
-            "content": comment.content,
-            "created_at": comment.created_at,
-            "replies": [],
-            "likes": [],
-        }
-
-        # Get replies for each comment
-        for reply in comment.replies:
-            reply_data = {
-                "id": reply.id,
-                "content": reply.content,
-                "username": reply.user.username,
-                "created_at": reply.created_at,
-            }
-            comment_data["replies"].append(reply_data)
-
-        # Get usernames who have liked the comment
-        for like in comment.likes:
-            like_data = {
-                "id": like.user.id,
-                "username": like.user.username,
-            }
-            comment_data["likes"].append(like_data)
-
-        user_data["comments"].append(comment_data)
-
-    # return jsonify(user_data), 200
-    return render_template(
-        "dbtest.html",
-        user_data=user_data,
-        comments=comments,
-        replies=replies,
-        likes=likes,
-        type="comments",
-    )
-
-
-@app.route("/dbtest_replies/<int:user_id>", methods=["GET"])
-def dbtest_replies(user_id):
-    user = User.query.get(user_id)
-    comments = Comment.query.filter_by(user_id=user.id).all()
-    replies = Reply.query.filter_by(user_id=user.id).all()
-    likes = Comment.query.filter_by(user_id=user.id).all()
-
-    if user is None:
-        return jsonify({"message": "User not found"}), 404
-
-    # Get user's replies with comment information and likes
-    user_replies = (
-        Reply.query.options(joinedload(Reply.comment).joinedload(Comment.user))
-        .options(joinedload(Reply.comment).joinedload(Comment.likes).joinedload(Like.user))
-        .filter_by(user_id=user.id)
-        .all()
-    )
-
-    user_data = {"id": user.id, "username": user.username, "replies": []}
-
-    for reply in user_replies:
-        reply_data = {
-            "id": reply.id,
-            "content": reply.content,
-            "created_at": reply.created_at,
-            "comment": {
-                "id": reply.comment.id,
-                "content": reply.comment.content,
-                "username": reply.comment.user.username,
-                "created_at": reply.comment.created_at,
-                "total_replies": len(reply.comment.replies),
-                "total_likes": len(reply.comment.likes),
-                "replies": [],  # Placeholder for nested replies
-                "likes": [],  # Placeholder for likes on the comment
-            },
-        }
-
-        for reply in reply.comment.replies:
-            comment_reply_data = {
-                "reply_content": reply.content,
-                "reply_username": reply.user.username,
-                "reply_created_at": reply.created_at,
-            }
-            reply_data["comment"]["replies"].append(comment_reply_data)
-            
-        # Get usernames who have liked the reply
-        for like in reply.comment.likes:
-            like_data = {
-                "id": like.user.id,
-                "username": like.user.username,
-            }
-            reply_data["comment"]["likes"].append(like_data)
-
-        user_data["replies"].append(reply_data)
-
-    # return jsonify(user_data), 200
-    return render_template(
-        "dbtest.html",
-        user_data=user_data,
-        comments=comments,
-        replies=replies,
-        likes=likes,
-        type="replies",
-    )
-
-
-@app.route("/dbtest/<int:user_id>", methods=["GET"])
-def dbtest(user_id):
-    user = User.query.get(user_id)
-
-    if user is None:
-        return jsonify({"message": "User not found"}), 404
-
-    # Get user's replies with comment information and likes
-    user_replies = (
-        Reply.query.options(joinedload(Reply.comment).joinedload(Comment.user))
-        .options(joinedload(Reply.comment).joinedload(Comment.likes).joinedload(Like.user))
-        .filter_by(user_id=user.id)
-        .all()
-    )
-
-    user_data = {"id": user.id, "username": user.username, "replies": []}
-
-    for reply in user_replies:
-        reply_data = {
-            "id": reply.id,
-            "content": reply.content,
-            "created_at": reply.created_at,
-            "comment": {
-                "id": reply.comment.id,
-                "content": reply.comment.content,
-                "username": reply.comment.user.username,
-                "created_at": reply.comment.created_at,
-                "total_replies": len(reply.comment.replies),
-                "total_likes": len(reply.comment.likes),
-                "replies": [],  # Placeholder for nested replies
-                "likes": [],  # Placeholder for likes on the comment
-            },
-        }
-
-        for reply in reply.comment.replies:
-            comment_reply_data = {
-                "reply_content": reply.content,
-                "reply_username": reply.user.username,
-                "reply_created_at": reply.created_at,
-            }
-            reply_data["comment"]["replies"].append(comment_reply_data)
-            
-        # Get usernames who have liked the reply
-        for like in reply.comment.likes:
-            like_data = {
-                "id": like.user.id,
-                "username": like.user.username,
-            }
-            reply_data["comment"]["likes"].append(like_data)
-
-        user_data["replies"].append(reply_data)
-
-    return jsonify(user_data), 200
 
 
 if __name__ == "__main__":

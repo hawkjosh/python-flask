@@ -9,7 +9,7 @@
     <div class="dashboard-item-content">{{ comments|length|pluralize_comment|upper }}</div>
     {% if comments %}
 
-    <a class="dashboard-item-btn comments" href="{{ url_for('user_comments') }}">View Your Comments</a>
+    <a class="dashboard-item-btn comments" href="{{ url_for('user_comments', user_id=current_user.id) }}">View Your Comments</a>
     {% endif %}
   </div>
   <div class="dashboard-divider">
@@ -19,7 +19,7 @@
     <div class="dashboard-item-content">{{ replies|length|pluralize_reply|upper }}</div>
     {% if replies %}
 
-    <a class="dashboard-item-btn replies" href="{{ url_for('user_replies') }}">View Your Replies</a>
+    <a class="dashboard-item-btn replies" href="{{ url_for('user_replies', user_id=current_user.id) }}">View Your Replies</a>
     {% endif %}
   </div>
   <div class="dashboard-divider">
@@ -29,7 +29,7 @@
     <div class="dashboard-item-content">{{ likes|length|pluralize_like|upper }}</div>
     {% if likes %}
 
-    <a class="dashboard-item-btn likes" href="{{ url_for('user_likes') }}">View Your Likes</a>
+    <a class="dashboard-item-btn likes" href="{{ url_for('user_likes', user_id=current_user.id) }}">View Your Likes</a>
     {% endif %}
   </div>
 </div>
