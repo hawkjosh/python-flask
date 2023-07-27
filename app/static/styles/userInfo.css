@@ -82,18 +82,18 @@
 				display: flex;
 				align-items: center;
 				justify-content: space-between;
-				@media (width < 44rem) {
+				/* @media (width < 44rem) {
 					flex-direction: column;
 					gap: 1.5rem;
-				}
+				} */
 
 				& .user-comment-post-info {
 					font-family: var(--subtext-font);
 					font-size: 0.875rem;
 					color: var(--subtext-color);
-					@media (width < 32rem) {
+					/* @media (width < 32rem) {
 						font-size: 0.75rem;
-					}
+					} */
 
 					& .user-strong {
 						font-weight: 600;
@@ -176,18 +176,18 @@
 							font-size: 1.125rem;
 							font-weight: 500;
 						}
-						@media (width < 32rem) {
+						/* @media (width < 32rem) {
 							font-size: 1rem;
-						}
+						} */
 
 						& .user-reply-subtext {
 							color: var(--subtext-color);
 							font-family: var(--subtext-font);
 							font-size: 0.875rem;
 							font-style: italic;
-							@media (width < 32rem) {
+							/* @media (width < 32rem) {
 								font-size: 0.75rem;
-							}
+							} */
 
 							& .user-strong {
 								font-weight: 600;

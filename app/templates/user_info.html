@@ -124,28 +124,28 @@
   <div class="user-comment-card">
     <div class="user-comment-content-wrapper">
       <div class="user-comment-text">
-        {{ reply.comment.content }}
+        {{reply.comment.content}}
       </div>
       <div class="user-comment-subtext">
         <div class="user-comment-post-info">
           Posted by
           <span class="user-strong">
-            {{ reply.comment.username }}
+            {{reply.comment.username}}
           </span>
           on
           <span class="user-strong">
-            {{ reply.comment.created_at|clean_date }}
+            {{reply.comment.created_at|clean_date}}
           </span>
         </div>
         <div class="user-comment-counts">
           <div class="user-comment-count-text">
-            {{ reply.comment.total_replies }} replies
+            {{reply.comment.total_replies}} replies
           </div>
           <span class="user-comment-count-divider">
             |
           </span>
           <div class="user-comment-count-text">
-            {{ reply.comment.total_likes }} likes
+            {{reply.comment.total_likes}} likes
           </div>
         </div>
       </div>
@@ -162,8 +162,7 @@
       <div class="user-replies-label">Replies...</div>
       <div class="user-reply-cards-container">
         {% for comment_reply in reply.comment.replies %}
-        <div
-          class="{% if user_data.username == comment_reply.reply_username %}user-reply-card highlight{% else %}user-reply-card{% endif %}">
+        <div class="{% if user_data.username == comment_reply.reply_username %}user-reply-card highlight{% else %}user-reply-card{% endif %}">
           <div class="user-reply-content-wrapper">
             <div class="user-reply-text">{{ comment_reply.reply_content }}</div>
             <div class="user-reply-subtext">
