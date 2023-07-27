@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block script %}
+<link rel="stylesheet" href="../static/styles/index.css" />
+{% endblock script %}
+
 {% block content %}
 {% if unauth %}
 <div class="login-msg-wrapper">

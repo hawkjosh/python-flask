@@ -26,19 +26,10 @@
       {{ current_user.username }}
       <div class="dropdown-list" id="dropdownList">
         <a class="list-item" href="{{ url_for('index') }}">
-          Home
-        </a>
-        <a class="list-item" href="{{ url_for('user_dashboard', user_id=current_user.id) }}">
-          My Dashboard
+          All Comments
         </a>
         <a class="list-item" href="{{ url_for('user_comments', user_id=current_user.id) }}">
-          My Comments
-        </a>
-        <a class="list-item" href="{{ url_for('user_replies', user_id=current_user.id) }}">
-          My Replies
-        </a>
-        <a class="list-item" href="{{ url_for('user_likes', user_id=current_user.id) }}">
-          My Likes
+          My Activity
         </a>
         <a class="list-item" href="{{ url_for('logout') }}">
           Logout

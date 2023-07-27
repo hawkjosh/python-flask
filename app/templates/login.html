@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block script %}
+<link rel="stylesheet" href="../static/styles/auth.css" />
+{% endblock script %}
+
 {% block content %}
 {% if error %}
 <dialog class="auth-error-container" open>

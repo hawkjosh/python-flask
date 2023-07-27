@@ -1,3 +1,8 @@
+{% block script %}
+<link rel="stylesheet" href="../static/styles/replyComment.css" />
+{% endblock script %}
+
+{% if current_user.is_authenticated %}
 <dialog class="comment-reply-modal" data-comment-reply>
   <form class="comment-reply-form" method="POST" data-comment-reply-form>
     <div class="comment-reply-comment-card">
@@ -15,3 +20,4 @@
     </div>
   </form>
 </dialog>
+{% endif %}

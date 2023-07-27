@@ -5,28 +5,28 @@
 {% endblock script %}
 
 {% block content %}
-<div class="user-info-heading-container">
+<div class="user-activity-heading-container">
   {% if user.id == current_user.id %}
-  <div class="user-dashboard-title">
-    My Dashboard
+  <div class="user-activity-title">
+    My Forum Activity
   </div>
   {% else %}
-  <div class="user-dashboard-title">
-    {{user.username}}'s Dashboard
+  <div class="user-activity-title">
+    Forum Activity for <span class="username">{{user.username}}</span>
   </div>
   {% endif %}
-  <div class="user-dashboard-stats-container">
-    <div class="user-stat-type-wrapper comments">
+  <div class="user-activity-stats-container">
+    <div class="user-stat-type-wrapper {% if type == 'comments' %}comments selected{% endif %}" href="{{ url_for('user_replies', user_id=user.id) }}">
       <a class="{% if type == 'comments' %}user-stat-type-link selected{% else %}user-stat-type-link{% endif %}" href="{{ url_for('user_comments', user_id=user.id) }}">
         {{ comments|length|pluralize_comment|upper }}
       </a>
     </div>
-    <div class="user-stat-type-wrapper replies">
+    <div class="user-stat-type-wrapper {% if type == 'replies' %}replies selected{% endif %}">
       <a class="{% if type == 'replies' %}user-stat-type-link selected{% else %}user-stat-type-link{% endif %}" href="{{ url_for('user_replies', user_id=user.id) }}">
         {{ replies|length|pluralize_reply|upper }}
       </a>
     </div>
-    <div class="user-stat-type-wrapper likes">
+    <div class="user-stat-type-wrapper {% if type == 'likes' %}likes selected{% endif %}">
       <a class="{% if type == 'likes' %}user-stat-type-link selected{% else %}user-stat-type-link{% endif %}" href="{{ url_for('user_likes', user_id=user.id) }}">
         {{ likes|length|pluralize_like|upper }}
       </a>
@@ -67,8 +67,8 @@
     </div>
     <div class="user-replies-container">
       {% if not comment.replies %}
-      <div class="user-replies-label">
-        This comment does not have any replies yet...
+      <div class="user-replies-label empty">
+        This comment does not have any replies yet.
       </div>
       {% else %}
       <div class="user-replies-label">Replies...</div>
@@ -90,29 +90,29 @@
           </div>
         </div>
         {% endfor %}
-        {% endif %}
       </div>
+      {% endif %}
     </div>
     <div class="user-info-divider">
       <hr class="user-info-divider-line">
     </div>
     <div class="user-likes-container">
       {% if not comment.likes %}
-      <div class="user-likes-label">
-        This comment does not have any likes yet...
+      <div class="user-likes-label empty">
+        This comment does not have any likes yet.
       </div>
       {% else %}
       <div class="user-likes-label">Likes...</div>
       <div class="user-likes-content-wrapper">
         {% for like in comment.likes %}
-        <a class="user-like-username-btn" href="{{ url_for('user_dashboard', user_id=like.id) }}">
+        <a class="user-like-username-btn" href="{{ url_for('user_comments', user_id=like.id) }}">
           <div class="user-like-username">
             {{ like.username }}
           </div>
         </a>
         {% endfor %}
-        {% endif %}
       </div>
+      {% endif %}
     </div>
   </div>
   {% endfor %}
@@ -155,8 +155,8 @@
     </div>
     <div class="user-replies-container">
       {% if not reply.comment.replies %}
-      <div class="user-replies-label">
-        This comment does not have any replies yet...
+      <div class="user-replies-label empty">
+        This comment does not have any replies yet.
       </div>
       {% else %}
       <div class="user-replies-label">Replies...</div>
@@ -178,29 +178,29 @@
           </div>
         </div>
         {% endfor %}
-        {% endif %}
       </div>
+      {% endif %}
     </div>
     <div class="user-info-divider">
       <hr class="user-info-divider-line">
     </div>
     <div class="user-likes-container">
       {% if not reply.comment.likes %}
-      <div class="user-likes-label">
-        This comment does not have any likes yet...
+      <div class="user-likes-label empty">
+        This comment does not have any likes yet.
       </div>
       {% else %}
       <div class="user-likes-label">Likes...</div>
       <div class="user-likes-content-wrapper">
         {% for like in reply.comment.likes %}
-        <a class="user-like-username-btn" href="{{ url_for('user_dashboard', user_id=like.id) }}">
+        <a class="user-like-username-btn" href="{{ url_for('user_comments', user_id=like.id) }}">
           <div class="user-like-username">
             {{ like.username }}
           </div>
         </a>
         {% endfor %}
-        {% endif %}
       </div>
+      {% endif %}
     </div>
   </div>
   {% endfor %}
@@ -243,8 +243,8 @@
     </div>
     <div class="user-replies-container">
       {% if not like.replies %}
-      <div class="user-replies-label">
-        This comment does not have any replies yet...
+      <div class="user-replies-label empty">
+        This comment does not have any replies yet.
       </div>
       {% else %}
       <div class="user-replies-label">Replies...</div>
@@ -268,30 +268,30 @@
           </div>
         </div>
         {% endfor %}
-        {% endif %}
       </div>
+      {% endif %}
     </div>
     <div class="user-info-divider">
       <hr class="user-info-divider-line">
     </div>
     <div class="user-likes-container">
       {% if not like.likes %}
-      <div class="user-likes-label">
-        This comment does not have any likes yet...
+      <div class="user-likes-label empty">
+        This comment does not have any likes yet.
       </div>
       {% else %}
       <div class="user-likes-label">Likes...</div>
       <div class="user-likes-content-wrapper">
         {% for comment_like in like.likes %}
-        <a class="user-like-username-btn" href="{{ url_for('user_dashboard', user_id=comment_like.id) }}">
+        <a class="user-like-username-btn" href="{{ url_for('user_comments', user_id=comment_like.id) }}">
           <div
             class="{% if user_data.username == comment_like.username %}user-like-username highlight{% else %}user-like-username{% endif %}">
             {{ comment_like.username }}
           </div>
         </a>
         {% endfor %}
-        {% endif %}
       </div>
+      {% endif %}
     </div>
   </div>
   {% endfor %}

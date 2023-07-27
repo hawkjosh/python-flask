@@ -1,34 +1,44 @@
-.user-info-heading-container {
+.user-activity-heading-container {
 	display: flex;
 	flex-direction: column;
-	gap: 1.5rem;
+	gap: 2rem;
 
-	& .user-dashboard-title {
+	& .user-activity-title {
 		text-align: center;
 		font-size: 2.5rem;
 		font-weight: 600;
 		color: var(--primary-color);
+
+		& .username {
+			background: var(--accent-color-two);
+			padding: 0.25rem 0.675rem;
+			border-radius: 0.5rem;
+		}
 	}
 
-	& .user-dashboard-stats-container {
+	& .user-activity-stats-container {
 		display: flex;
 		justify-content: space-evenly;
 		align-items: center;
+		margin-bottom: 1rem;
 
 		& .user-stat-type-wrapper {
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			padding: 1rem;
+			padding: 0.25rem 0.5rem;
 			border-radius: 0.5rem;
-			&.comments {
-				background: var(--accent-color-one);
-			}
-			&.replies {
+			position: relative;
+			background: var(--accent-color-three);
+			&.selected {
+				border: 2px solid var(--primary-color);
 				background: var(--accent-color-two);
-			}
-			&.likes {
-				background: var(--accent-color-three);
+				&::after {
+					content: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzZW0iIGhlaWdodD0iM2VtIiB2aWV3Qm94PSIwIDAgMjAgMTQiPjxwYXRoIGZpbGw9ImhzbCgyMDQsIDEwMCUsIDEyJSkiIGQ9Ik0gMTAuNCAxMS44IGwgNy4zIC04LjMgYyAwLjUgLTAuNSAwLjIgLTEuNSAtMC40IC0xLjUgaCAtMTQuNyBjIC0wLjYgMCAtMC45IDEgLTAuNCAxLjUgbCA3LjMgOC4zIGMgMC4yIDAuMyAwLjYgMC4zIDAuOCAwIFoiLz48L3N2Zz4=');
+					position: absolute;
+					bottom: 0;
+					transform: translateY(100%);
+				}
 			}
 
 			& .user-stat-type-link {
@@ -40,8 +50,7 @@
 				font-family: var(--primary-font);
 				cursor: pointer;
 				&.selected {
-					border: 0.125rem solid var(--secondary-color);
-					border-radius: 0.375rem;
+					color: var(--primary-color);
 				}
 			}
 		}
@@ -144,6 +153,11 @@
 				font-size: 1.25rem;
 				font-weight: bold;
 				color: var(--primary-color);
+
+				&.empty {
+					text-align: center;
+					color: var(--accent-color-two);
+				}
 			}
 
 			& .user-reply-cards-container {
@@ -209,6 +223,11 @@
 				font-size: 1.25rem;
 				font-weight: bold;
 				color: var(--primary-color);
+
+				&.empty {
+					text-align: center;
+					color: var(--accent-color-two);
+				}
 			}
 
 			& .user-likes-content-wrapper {

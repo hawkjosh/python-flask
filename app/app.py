@@ -341,82 +341,6 @@ def like_comment(comment_id):
 #     return redirect(url_for("index"))
 
 
-# @app.route("/user/dashboard", methods=["GET"])
-# def user_dashboard():
-#     if not current_user.is_authenticated:
-#         return redirect(url_for("index"))
-
-#     user_id = current_user.id
-#     comments = Comment.query.filter_by(user_id=user_id).all()
-#     replies = Reply.query.filter_by(user_id=user_id).all()
-#     likes = Like.query.filter_by(user_id=user_id).all()
-#     return render_template(
-#         "user_dashboard.html", comments=comments, replies=replies, likes=likes
-#     )
-
-
-# @app.route("/user/comments", methods=["GET"])
-# def user_comments():
-#     if not current_user.is_authenticated:
-#         return redirect(url_for("index"))
-
-#     user_id = current_user.id
-#     comments = Comment.query.filter_by(user_id=user_id).all()
-#     return render_template("user_comments.html", comments=comments)
-
-
-# @app.route("/user/replies", methods=["GET"])
-# def user_replies():
-#     if not current_user.is_authenticated:
-#         return redirect(url_for("index"))
-
-#     user_id = current_user.id
-#     replies = (
-#         Reply.query.filter_by(user_id=user_id).order_by(Reply.created_at.desc()).all()
-#     )
-
-#     grouped_replies = {}
-
-#     for reply in replies:
-#         comment_id = reply.comment_id
-#         if comment_id not in grouped_replies:
-#             grouped_replies[comment_id] = []
-#         grouped_replies[comment_id].append(reply)
-
-#     return render_template(
-#         "user_replies.html", grouped_replies=grouped_replies, replies=replies
-#     )
-
-
-# @app.route("/user/likes", methods=["GET"])
-# def user_likes():
-#     if not current_user.is_authenticated:
-#         return redirect(url_for("index"))
-
-#     user_id = current_user.id
-#     likes = Like.query.filter_by(user_id=user_id).all()
-#     return render_template("user_likes.html", likes=likes)
-
-
-@app.route("/user_dashboard/<int:user_id>", methods=["GET"])
-def user_dashboard(user_id):
-    user = User.query.get(user_id)
-    comments = Comment.query.filter_by(user_id=user.id).all()
-    replies = Reply.query.filter_by(user_id=user.id).all()
-    likes = Comment.query.filter_by(user_id=user.id).all()
-
-    if user is None:
-        return jsonify({"message": "User not found"}), 404
-
-    return render_template(
-        "user_info.html",
-        user=user,
-        comments=comments,
-        replies=replies,
-        likes=likes,
-    )
-
-
 @app.route("/user_comments/<int:user_id>", methods=["GET"])
 def user_comments(user_id):
     user = User.query.get(user_id)
@@ -538,8 +462,6 @@ def user_replies(user_id):
         likes=likes,
         type="replies",
     )
-    
-    # return jsonify(user_data), 200
 
 
 @app.route("/user_likes/<int:user_id>", methods=["GET"])

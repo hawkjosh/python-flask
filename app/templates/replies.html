@@ -5,6 +5,11 @@
 {% endblock script %}
 
 {% block content %}
+	<a class="return-btn-link" href="{{ url_for('index') }}">
+		<div class="return-btn">
+			Return to All Comments
+		</div>
+	</a>
 <div class="comments-list-container">
 
 	<div class="{% if comment.user_id == current_user.id %}comment-card curr-user{% else %}comment-card{% endif %}">
@@ -13,8 +18,11 @@
 			<div class="comment-info">
 				<div class="comment-subtext">
 					Posted by
-					<span class="{% if comment.user_id == current_user.id %}strong curr-user{% else %}strong user{% endif %}">{{
-						comment.id|comment_username }}</span>
+					<span class="{% if comment.user_id == current_user.id %}strong curr-user{% else %}strong user{% endif %}">
+						<a class="user-link" href="{{ url_for('user_comments', user_id=comment.user.id) }}">
+							{{ comment.id|comment_username }}
+						</a>
+					</span>
 					on
 					<span class="strong">{{ comment.created_at|clean_date }}</span>
 				</div>
@@ -68,8 +76,11 @@
 			<div class="comment-replies-info-container">
 				<div class="comment-replies-subtext">
 					Reply from
-					<span class="{% if reply.user_id == current_user.id %}strong curr-user{% else %}strong user{% endif %}">{{
-						reply.id|reply_username }}</span>
+					<span class="{% if reply.user_id == current_user.id %}strong curr-user{% else %}strong user{% endif %}">
+						<a class="user-link" href="{{ url_for('user_comments', user_id=reply.user.id) }}">
+							{{ reply.id|reply_username }}
+						</a>
+					</span>
 					on
 					<span class="strong">{{ reply.created_at|clean_date }}</span>
 				</div>

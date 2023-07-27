@@ -18,7 +18,7 @@
         <div class="comment-subtext">
           Posted by
           <span class="{% if comment.user_id == current_user.id %}strong curr-user{% else %}strong user{% endif %}">
-            <a class="user-link" href="{{ url_for('user_dashboard', user_id=comment.user.id) }}">
+            <a class="user-link" href="{{ url_for('user_comments', user_id=comment.user.id) }}">
               {{comment.id|comment_username }}
             </a>
           </span> on 
