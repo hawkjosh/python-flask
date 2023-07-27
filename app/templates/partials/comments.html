@@ -1,3 +1,7 @@
+{% block script %}
+<link rel="stylesheet" href="../static/styles/comments.css" />
+{% endblock script %}
+
 <div class="comments-list-container">
   {% if no_comments %}
   <div class="no-comments-msg-wrapper">
@@ -12,9 +16,15 @@
     <div class="{% if not current_user.is_authenticated %}comment-info-container unauth{% else %}comment-info-container{% endif %}">
       <div class="comment-info">
         <div class="comment-subtext">
-          Posted by <span
-            class="{% if comment.user_id == current_user.id %}strong curr-user{% else %}strong user{% endif %}">{{
-            comment.id|comment_username }}</span> on <span class="strong">{{ comment.created_at|clean_date }}</span>
+          Posted by
+          <span class="{% if comment.user_id == current_user.id %}strong curr-user{% else %}strong user{% endif %}">
+            <a class="user-link" href="{{ url_for('user_dashboard', user_id=comment.user.id) }}">
+              {{comment.id|comment_username }}
+            </a>
+          </span> on 
+          <span class="strong">
+            {{ comment.created_at|clean_date }}
+          </span>
         </div>
         <div class="comment-counts">
           <div class="replies-count-wrapper">

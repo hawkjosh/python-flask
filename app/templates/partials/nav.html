@@ -1,39 +1,49 @@
+{% block script %}
+<link rel="stylesheet" href="../static/styles/nav.css" />
+{% endblock script %}
+
 <div class="nav-container">
-  <a class="nav-title" href="{{ url_for('index') }}">
-    Comment Forum
-  </a>
+  <div class="nav-title-section">
+    <a class="nav-title" href="{{ url_for('index') }}">
+      Comment Forum
+    </a>
+  </div>
 
   {% if current_user.is_authenticated and current_page == "index" %}
-  <div class="new-comment-btn" data-new-comment-open>
-    <svg>
-      <rect x="0" y="0" width="100%" height="100%" />
-    </svg>
-    New Comment
+  <div class="new-comment-btn-section">
+    <div class="new-comment-btn" data-new-comment-open>
+      <svg>
+        <rect x="0" y="0" width="100%" height="100%" />
+      </svg>
+      New Comment
+    </div>
   </div>
   {% endif %}
 
   {% if current_user.is_authenticated %}
-  <div class="nav-dropdown" id="dropdownTrigger">
-    {{ current_user.username }}
-    <div class="dropdown-list" id="dropdownList">
-      <a class="list-item" href="{{ url_for('index') }}">
-        Home
-      </a>
-      <a class="list-item" href="{{ url_for('user_dashboard') }}">
-        My Dashboard
-      </a>
-      <a class="list-item" href="{{ url_for('user_comments', user_id=current_user.id) }}">
-        My Comments
-      </a>
-      <a class="list-item" href="{{ url_for('user_replies', user_id=current_user.id) }}">
-        My Replies
-      </a>
-      <a class="list-item" href="{{ url_for('user_likes', user_id=current_user.id) }}">
-        My Likes
-      </a>
-      <a class="list-item" href="{{ url_for('logout') }}">
-        Logout
-      </a>
+  <div class="nav-dropdown-section">
+    <div class="nav-dropdown" id="dropdownTrigger">
+      {{ current_user.username }}
+      <div class="dropdown-list" id="dropdownList">
+        <a class="list-item" href="{{ url_for('index') }}">
+          Home
+        </a>
+        <a class="list-item" href="{{ url_for('user_dashboard', user_id=current_user.id) }}">
+          My Dashboard
+        </a>
+        <a class="list-item" href="{{ url_for('user_comments', user_id=current_user.id) }}">
+          My Comments
+        </a>
+        <a class="list-item" href="{{ url_for('user_replies', user_id=current_user.id) }}">
+          My Replies
+        </a>
+        <a class="list-item" href="{{ url_for('user_likes', user_id=current_user.id) }}">
+          My Likes
+        </a>
+        <a class="list-item" href="{{ url_for('logout') }}">
+          Logout
+        </a>
+      </div>
     </div>
   </div>
   {% endif %}

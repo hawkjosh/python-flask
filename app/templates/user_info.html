@@ -5,262 +5,298 @@
 {% endblock script %}
 
 {% block content %}
-<div class="dbt-title-wrapper">
-  <div class="dbt-title">
-    Comment Forum Activity for
-    <span class="dbt-title-username">
-      {{user_data.username}}
-    </span>
+<div class="user-info-heading-container">
+  {% if user.id == current_user.id %}
+  <div class="user-dashboard-title">
+    My Dashboard
   </div>
-</div>
-
-
-
-<div class="dbt-user-stats-container">
-  <div class="{% if type == 'comments' %}dbt-user-stat highlight{% else %}dbt-user-stat{% endif %}">
-    Comments: {{ comments|length }}
+  {% else %}
+  <div class="user-dashboard-title">
+    {{user.username}}'s Dashboard
   </div>
-  <div class="{% if type == 'replies' %}dbt-user-stat highlight{% else %}dbt-user-stat{% endif %}">
-    Replies: {{ replies|length }}
-  </div>
-  <div class="{% if type == 'likes' %}dbt-user-stat highlight{% else %}dbt-user-stat{% endif %}">
-    Likes: {{ likes|length }}
+  {% endif %}
+  <div class="user-dashboard-stats-container">
+    <div class="user-stat-type-wrapper comments">
+      <a class="{% if type == 'comments' %}user-stat-type-link selected{% else %}user-stat-type-link{% endif %}" href="{{ url_for('user_comments', user_id=user.id) }}">
+        {{ comments|length|pluralize_comment|upper }}
+      </a>
+    </div>
+    <div class="user-stat-type-wrapper replies">
+      <a class="{% if type == 'replies' %}user-stat-type-link selected{% else %}user-stat-type-link{% endif %}" href="{{ url_for('user_replies', user_id=user.id) }}">
+        {{ replies|length|pluralize_reply|upper }}
+      </a>
+    </div>
+    <div class="user-stat-type-wrapper likes">
+      <a class="{% if type == 'likes' %}user-stat-type-link selected{% else %}user-stat-type-link{% endif %}" href="{{ url_for('user_likes', user_id=user.id) }}">
+        {{ likes|length|pluralize_like|upper }}
+      </a>
+    </div>
   </div>
 </div>
 
 {% if type == "comments" %}
-<div class="dbt-user-type-heading">
-  All comments posted by
-  <span class="dbt-user-type-heading-username">
-    {{ user_data.username }}
-  </span>
-  :
-</div>
-
-{% for comment in user_data.comments %}
-<div class="dbt-comment-container highlight">
-  <div class="dbt-comment-content-wrapper">
-    <div class="dbt-comment-text">
-      {{comment.content}}
-    </div>
-    <div class="dbt-comment-info-wrapper">
-      <div class="dbt-comment-post-info">
-        Posted on
-        <span class="dbt-strong">
-          {{comment.created_at|clean_date}}
-        </span>
+<div class="user-comments-list-container">
+  {% for comment in user_data.comments %}
+  <div class="user-comment-card highlight">
+    <div class="user-comment-content-wrapper">
+      <div class="user-comment-text">
+        {{comment.content}}
       </div>
-      <div class="dbt-comment-count-wrapper">
-        <div class="dbt-comment-count-info">
-          {{comment.replies|length}} replies
+      <div class="user-comment-subtext">
+        <div class="user-comment-post-info">
+          Posted on
+          <span class="user-strong">
+            {{comment.created_at|clean_date}}
+          </span>
         </div>
-        <div class="dbt-comment-count-info-divider">
-          ||
-        </div>
-        <div class="dbt-comment-count-info">
-          {{comment.likes|length}} likes
-        </div>
-      </div>
-    </div>
-  </div>
-  <hr class="dbt-comment-horizontal-divider">
-  <div class="dbt-reply-container">
-    <div class="dbt-reply-heading">Replies...</div>
-    <div class="dbt-reply-card-container">
-      {% for reply in comment.replies %}
-      <div class="dbt-reply-card">
-        <div class="dbt-reply-content-wrapper">
-          <div class="dbt-reply-text">{{ reply.content }}</div>
-          <div class="dbt-reply-subtext">
-            Reply from
-            <span class="dbt-strong">
-              {{ reply.username }}
-            </span>
-            on
-            <span class="dbt-strong">
-              {{ reply.created_at|clean_date }}
-            </span>
+        <div class="user-comment-counts">
+          <div class="user-comment-count-text">
+            {{comment.replies|length}} replies
+          </div>
+          <span class="user-comment-count-divider">
+            |
+          </span>
+          <div class="user-comment-count-text">
+            {{comment.likes|length}} likes
           </div>
         </div>
       </div>
-      {% endfor %}
     </div>
-  </div>
-  <hr class="dbt-comment-horizontal-divider">
-  <div class="dbt-like-container">
-    <div class="dbt-like-heading">Likes...</div>
-    <div class="dbt-like-content-wrapper">
-      {% for like in comment.likes %}
-      <a class="dbt-like-username-btn" href="#">
-        <div class="dbt-like-username">
-          {{ like.username }}
+    <div class="user-info-divider">
+      <hr class="user-info-divider-line">
+    </div>
+    <div class="user-replies-container">
+      {% if not comment.replies %}
+      <div class="user-replies-label">
+        This comment does not have any replies yet...
+      </div>
+      {% else %}
+      <div class="user-replies-label">Replies...</div>
+      <div class="user-reply-cards-container">
+        {% for reply in comment.replies %}
+        <div class="user-reply-card">
+          <div class="user-reply-content-wrapper">
+            <div class="user-reply-text">{{ reply.content }}</div>
+            <div class="user-reply-subtext">
+              Reply from
+              <span class="user-strong">
+                {{ reply.username }}
+              </span>
+              on
+              <span class="user-strong">
+                {{ reply.created_at|clean_date }}
+              </span>
+            </div>
+          </div>
         </div>
-      </a>
-      {% endfor %}
+        {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+    <div class="user-info-divider">
+      <hr class="user-info-divider-line">
+    </div>
+    <div class="user-likes-container">
+      {% if not comment.likes %}
+      <div class="user-likes-label">
+        This comment does not have any likes yet...
+      </div>
+      {% else %}
+      <div class="user-likes-label">Likes...</div>
+      <div class="user-likes-content-wrapper">
+        {% for like in comment.likes %}
+        <a class="user-like-username-btn" href="{{ url_for('user_dashboard', user_id=like.id) }}">
+          <div class="user-like-username">
+            {{ like.username }}
+          </div>
+        </a>
+        {% endfor %}
+        {% endif %}
+      </div>
     </div>
   </div>
+  {% endfor %}
 </div>
-{% endfor %}
 
 {% elif type == "replies" %}
-<div class="dbt-user-type-heading">
-  All replies from
-  <span class="dbt-user-type-heading-username">
-    {{ user_data.username }}
-  </span>
-  :
-</div>
-
-{% for reply in user_data.replies %}
-<div class="dbt-comment-container">
-  <div class="dbt-comment-content-wrapper">
-    <div class="dbt-comment-text">
-      {{ reply.comment.content }}
-    </div>
-    <div class="dbt-comment-info-wrapper">
-      <div class="dbt-comment-post-info">
-        Posted by
-        <span class="dbt-strong">
-          {{ reply.comment.username }}
-        </span>
-        on
-        <span class="dbt-strong">
-          {{ reply.comment.created_at|clean_date }}
-        </span>
+<div class="user-comments-list-container">
+  {% for reply in user_data.replies %}
+  <div class="user-comment-card">
+    <div class="user-comment-content-wrapper">
+      <div class="user-comment-text">
+        {{ reply.comment.content }}
       </div>
-      <div class="dbt-comment-count-wrapper">
-        <div class="dbt-comment-count-info">
-          {{ reply.comment.total_replies }} replies
+      <div class="user-comment-subtext">
+        <div class="user-comment-post-info">
+          Posted by
+          <span class="user-strong">
+            {{ reply.comment.username }}
+          </span>
+          on
+          <span class="user-strong">
+            {{ reply.comment.created_at|clean_date }}
+          </span>
         </div>
-        <div class="dbt-comment-count-info-divider">
-          ||
-        </div>
-        <div class="dbt-comment-count-info">
-          {{ reply.comment.total_likes }} likes
-        </div>
-      </div>
-    </div>
-  </div>
-  <hr class="dbt-comment-horizontal-divider">
-  <div class="dbt-reply-container">
-    <div class="dbt-reply-heading">Replies...</div>
-    <div class="dbt-reply-card-container">
-      {% for comment_reply in reply.comment.replies %}
-      <div
-        class="{% if user_data.username == comment_reply.reply_username %}dbt-reply-card highlight{% else %}dbt-reply-card{% endif %}">
-        <div class="dbt-reply-content-wrapper">
-          <div class="dbt-reply-text">{{ comment_reply.reply_content }}</div>
-          <div class="dbt-reply-subtext">
-            Reply from
-            <span class="dbt-strong">
-              {{ comment_reply.reply_username }}
-            </span>
-            on
-            <span class="dbt-strong">
-              {{ comment_reply.reply_created_at|clean_date }}
-            </span>
+        <div class="user-comment-counts">
+          <div class="user-comment-count-text">
+            {{ reply.comment.total_replies }} replies
+          </div>
+          <span class="user-comment-count-divider">
+            |
+          </span>
+          <div class="user-comment-count-text">
+            {{ reply.comment.total_likes }} likes
           </div>
         </div>
       </div>
-      {% endfor %}
     </div>
-  </div>
-  <hr class="dbt-comment-horizontal-divider">
-  <div class="dbt-like-container">
-    <div class="dbt-like-heading">Likes...</div>
-    <div class="dbt-like-content-wrapper">
-      {% for like in reply.comment.likes %}
-      <a class="dbt-like-username-btn" href="#">
-        <div class="dbt-like-username">
-          {{ like.username }}
+    <div class="user-info-divider">
+      <hr class="user-info-divider-line">
+    </div>
+    <div class="user-replies-container">
+      {% if not reply.comment.replies %}
+      <div class="user-replies-label">
+        This comment does not have any replies yet...
+      </div>
+      {% else %}
+      <div class="user-replies-label">Replies...</div>
+      <div class="user-reply-cards-container">
+        {% for comment_reply in reply.comment.replies %}
+        <div
+          class="{% if user_data.username == comment_reply.reply_username %}user-reply-card highlight{% else %}user-reply-card{% endif %}">
+          <div class="user-reply-content-wrapper">
+            <div class="user-reply-text">{{ comment_reply.reply_content }}</div>
+            <div class="user-reply-subtext">
+              Reply from
+              <span class="user-strong">
+                {{ comment_reply.reply_username }}
+              </span>
+              on
+              <span class="user-strong">
+                {{ comment_reply.reply_created_at|clean_date }}
+              </span>
+            </div>
+          </div>
         </div>
-      </a>
-      {% endfor %}
+        {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+    <div class="user-info-divider">
+      <hr class="user-info-divider-line">
+    </div>
+    <div class="user-likes-container">
+      {% if not reply.comment.likes %}
+      <div class="user-likes-label">
+        This comment does not have any likes yet...
+      </div>
+      {% else %}
+      <div class="user-likes-label">Likes...</div>
+      <div class="user-likes-content-wrapper">
+        {% for like in reply.comment.likes %}
+        <a class="user-like-username-btn" href="{{ url_for('user_dashboard', user_id=like.id) }}">
+          <div class="user-like-username">
+            {{ like.username }}
+          </div>
+        </a>
+        {% endfor %}
+        {% endif %}
+      </div>
     </div>
   </div>
+  {% endfor %}
 </div>
-{% endfor %}
 
 {% elif type == "likes" %}
-<div class="dbt-user-type-heading">
-  All likes by
-  <span class="dbt-user-type-heading-username">
-    {{ user_data.username }}
-  </span>
-  :
-</div>
-
-{% for like in user_data.likes %}
-<div class="dbt-comment-container">
-  <div class="dbt-comment-content-wrapper">
-    <div class="dbt-comment-text">
-      {{ like.content }}
-    </div>
-    <div class="dbt-comment-info-wrapper">
-      <div class="dbt-comment-post-info">
-        Posted by
-        <span class="dbt-strong">
-          {{ like.username }}
-        </span>
-        on
-        <span class="dbt-strong">
-          {{ like.created_at|clean_date }}
-        </span>
+<div class="user-comments-list-container">
+  {% for like in user_data.likes %}
+  <div class="user-comment-card">
+    <div class="user-comment-content-wrapper">
+      <div class="user-comment-text">
+        {{ like.content }}
       </div>
-      <div class="dbt-comment-count-wrapper">
-        <div class="dbt-comment-count-info">
-          {{ like.total_replies }} replies
+      <div class="user-comment-subtext">
+        <div class="user-comment-post-info">
+          Posted by
+          <span class="user-strong">
+            {{ like.username }}
+          </span>
+          on
+          <span class="user-strong">
+            {{ like.created_at|clean_date }}
+          </span>
         </div>
-        <div class="dbt-comment-count-info-divider">
-          ||
-        </div>
-        <div class="dbt-comment-count-info">
-          {{ like.total_likes }} likes
-        </div>
-      </div>
-    </div>
-  </div>
-  <hr class="dbt-comment-horizontal-divider">
-  <div class="dbt-reply-container">
-    <div class="dbt-reply-heading">Replies...</div>
-    <div class="dbt-reply-card-container">
-      {% for comment_reply in like.replies %}
-      <div
-        class="dbt-reply-card">
-        <div class="dbt-reply-content-wrapper">
-          <div class="dbt-reply-text">
-            {{ comment_reply.content }}
+        <div class="user-comment-counts">
+          <div class="user-comment-count-text">
+            {{ like.total_replies }} replies
           </div>
-          <div class="dbt-reply-subtext">
-            Reply from
-            <span class="dbt-strong">
-              {{ comment_reply.username }}
-            </span>
-            on
-            <span class="dbt-strong">
-              {{ comment_reply.created_at }}
-            </span>
+          <span class="user-comment-count-divider">
+            |
+          </span>
+          <div class="user-comment-count-text">
+            {{ like.total_likes }} likes
           </div>
         </div>
       </div>
-      {% endfor %}
     </div>
-  </div>
-  <hr class="dbt-comment-horizontal-divider">
-  <div class="dbt-like-container">
-    <div class="dbt-like-heading">Likes...</div>
-    <div class="dbt-like-content-wrapper">
-      {% for comment_like in like.likes %}
-      <a class="dbt-like-username-btn" href="#">
-        <div class="{% if user_data.username == comment_like.username %}dbt-like-username highlight{% else %}dbt-like-username{% endif %}">
-          {{ comment_like.username }}
+    <div class="user-info-divider">
+      <hr class="user-info-divider-line">
+    </div>
+    <div class="user-replies-container">
+      {% if not like.replies %}
+      <div class="user-replies-label">
+        This comment does not have any replies yet...
+      </div>
+      {% else %}
+      <div class="user-replies-label">Replies...</div>
+      <div class="user-reply-cards-container">
+        {% for comment_reply in like.replies %}
+        <div class="user-reply-card">
+          <div class="user-reply-content-wrapper">
+            <div class="user-reply-text">
+              {{ comment_reply.content }}
+            </div>
+            <div class="user-reply-subtext">
+              Reply from
+              <span class="user-strong">
+                {{ comment_reply.username }}
+              </span>
+              on
+              <span class="user-strong">
+                {{ comment_reply.created_at }}
+              </span>
+            </div>
+          </div>
         </div>
-      </a>
-      {% endfor %}
+        {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+    <div class="user-info-divider">
+      <hr class="user-info-divider-line">
+    </div>
+    <div class="user-likes-container">
+      {% if not like.likes %}
+      <div class="user-likes-label">
+        This comment does not have any likes yet...
+      </div>
+      {% else %}
+      <div class="user-likes-label">Likes...</div>
+      <div class="user-likes-content-wrapper">
+        {% for comment_like in like.likes %}
+        <a class="user-like-username-btn" href="{{ url_for('user_dashboard', user_id=comment_like.id) }}">
+          <div
+            class="{% if user_data.username == comment_like.username %}user-like-username highlight{% else %}user-like-username{% endif %}">
+            {{ comment_like.username }}
+          </div>
+        </a>
+        {% endfor %}
+        {% endif %}
+      </div>
     </div>
   </div>
+  {% endfor %}
 </div>
-{% endfor %}
 {% endif %}
 
 {% endblock content %}

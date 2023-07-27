@@ -1,3 +1,7 @@
+{% block script %}
+<link rel="stylesheet" href="../static/styles/newComment.css" />
+{% endblock script %}
+
 {% if current_user.is_authenticated %}
 <dialog class="new-comment-modal" data-new-comment>
   <form class="new-comment-form" action="." method="POST">

@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+:root {
+	--primary-font: 'Roboto', sans-serif;
+	--subtext-font: 'Roboto Mono', monospace;
+
+	--primary-color: hsl(204, 100%, 12%); /* Dark Navy Blue */
+	--secondary-color: hsl(0, 0%, 96%); /* Soft White */
+	--accent-color-one: hsl(180, 82%, 44%); /* Bright Teal */
+	--accent-color-two: hsl(16, 100%, 66%); /* Warm Orange */
+	--accent-color-three: hsl(0, 0%, 75%); /* Light Gray */
+	--text-color: hsl(0, 0%, 7%); /* Almost Black */
+	--subtext-color: hsl(0, 0%, 50%); /* Medium Gray */
+	--hover-color: hsl(180, 59%, 71%); /* Light Teal */
+
+	--primary-color-hsl: 204, 100%, 12%;
+	--secondary-color-hsl: 0, 0%, 96%;
+	--accent-color-one-hsl: 180, 82%, 44%;
+	--accent-color-two-hsl: 16, 100%, 66%;
+	--accent-color-three-hsl: 0, 0%, 75%;
+	--text-color-hsl: 0, 0%, 7%;
+	--subtext-color-hsl: 0, 0%, 50%;
+	--hover-color-hsl: 180, 59%, 71%;
+
+	--dropdown-shadow: -0.25rem 0.25rem 1rem hsla(var(--subtext-color-hsl), 0.875);
+	--card-shadow: 0.875rem 0.625rem 0.75rem hsla(var(--primary-color-hsl), 0.625);
+	--replies-card-shadow: 0.5rem 0.375rem 0.5rem
+		hsla(var(--primary-color-hsl), 0.625);
+	--textbox-shadow: 0 0 1rem hsla(var(--primary-color-hsl), 1);
+	--tooltip-shadow: 0.75rem 0.5rem 0.75rem hsla(var(--primary-color-hsl), 0.5);
+	--button-shadow: 0.125rem 0.125rem 0.25rem hsla(var(--primary-color-hsl), 0.5);
+
+	--modal-backdrop: hsla(204, 100%, 12%, 0.5);
+}
+
+*,
+::before,
+::after {
+	box-sizing: border-box;
+	margin: 0;
+	outline: none;
+}
+
+body {
+	font-family: var(--primary-font);
+	overflow-x: hidden;
+	background: var(--secondary-color);
+	&.no-scroll {
+		overflow-y: hidden;
+	}
+
+	& nav {
+		position: sticky;
+		top: 0;
+		z-index: 10;
+		background: var(--primary-color);
+		padding: 1rem;
+	}
+
+	& main {
+		width: 90%;
+		max-width: 64rem;
+		margin: auto;
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+		padding: 1.5rem 0;
+	}
+}
