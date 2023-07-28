@@ -306,9 +306,6 @@ def delete_reply(reply_id):
 def like_comment(comment_id):
     comment = Comment.query.get(comment_id)
 
-    if comment is None:
-        return redirect(url_for("index"))
-
     like = Like.query.filter_by(comment_id=comment_id, user_id=current_user.id).first()
     if like is None:
         like = Like(comment_id=comment_id, user_id=current_user.id, value=True)
@@ -344,12 +341,9 @@ def like_comment(comment_id):
 @app.route("/user_comments/<int:user_id>", methods=["GET"])
 def user_comments(user_id):
     user = User.query.get(user_id)
-    comments = Comment.query.filter_by(user_id=user.id).all()
-    replies = Reply.query.filter_by(user_id=user.id).all()
-    likes = Comment.query.filter_by(user_id=user.id).all()
-
-    if user is None:
-        return jsonify({"message": "User not found"}), 404
+    total_comments = len(Comment.query.filter_by(user_id=user.id).all())
+    total_replies = len(Reply.query.filter_by(user_id=user.id).all())
+    total_likes = len(Like.query.filter_by(user_id=user.id).all())
 
     user_comments = (
         Comment.query.options(joinedload(Comment.replies).joinedload(Reply.user))
@@ -358,42 +352,48 @@ def user_comments(user_id):
         .all()
     )
 
-    user_data = {"id": user.id, "username": user.username, "comments": []}
-
+    comments_data = []
     for comment in user_comments:
         comment_data = {
             "id": comment.id,
             "content": comment.content,
+            "username": comment.user.username,
+            "user_id": comment.user.id,
             "created_at": comment.created_at,
             "replies": [],
             "likes": [],
         }
 
         for reply in comment.replies:
-            reply_data = {
+            comment_reply_data = {
                 "id": reply.id,
                 "content": reply.content,
                 "username": reply.user.username,
+                "user_id": reply.user.id,
+                "comment_id": reply.comment_id,
                 "created_at": reply.created_at,
             }
-            comment_data["replies"].append(reply_data)
+            comment_data["replies"].append(comment_reply_data)
 
         for like in comment.likes:
-            like_data = {
+            comment_like_data = {
                 "id": like.user.id,
                 "username": like.user.username,
+                "user_id": like.user.id,
+                "comment_id": like.comment_id,
             }
-            comment_data["likes"].append(like_data)
+            comment_data["likes"].append(comment_like_data)
 
-        user_data["comments"].append(comment_data)
+        comments_data.append(comment_data)
+
+    user_data = {"id": user.id, "username": user.username, "comments": comments_data}
 
     return render_template(
         "user_info.html",
-        user=user,
         user_data=user_data,
-        comments=comments,
-        replies=replies,
-        likes=likes,
+        total_comments=total_comments,
+        total_replies=total_replies,
+        total_likes=total_likes,
         type="comments",
     )
 
@@ -401,12 +401,9 @@ def user_comments(user_id):
 @app.route("/user_replies/<int:user_id>", methods=["GET"])
 def user_replies(user_id):
     user = User.query.get(user_id)
-    comments = Comment.query.filter_by(user_id=user.id).all()
-    replies = Reply.query.filter_by(user_id=user.id).all()
-    likes = Like.query.filter_by(user_id=user.id).all()
-
-    if user is None:
-        return jsonify({"message": "User not found"}), 404
+    total_comments = len(Comment.query.filter_by(user_id=user.id).all())
+    total_replies = len(Reply.query.filter_by(user_id=user.id).all())
+    total_likes = len(Like.query.filter_by(user_id=user.id).all())
 
     user_replies = (
         Reply.query.options(joinedload(Reply.comment).joinedload(Comment.user))
@@ -417,49 +414,48 @@ def user_replies(user_id):
         .all()
     )
 
-    user_data = {"id": user.id, "username": user.username, "replies": []}
-
-    for reply in user_replies:
-        reply_data = {
-            "id": reply.id,
-            "content": reply.content,
-            "created_at": reply.created_at,
-            "comment": {
-                "id": reply.comment.id,
-                "content": reply.comment.content,
-                "username": reply.comment.user.username,
-                "created_at": reply.comment.created_at,
-                "total_replies": len(reply.comment.replies),
-                "total_likes": len(reply.comment.likes),
-                "replies": [],  # Placeholder for nested replies
-                "likes": [],  # Placeholder for likes on the comment
-            },
+    replies_data = []
+    for comment in user_replies:
+        comment_data = {
+            "id": comment.comment.id,
+            "content": comment.comment.content,
+            "username": comment.comment.user.username,
+            "user_id": comment.comment.user.id,
+            "created_at": comment.comment.created_at,
+            "replies": [],
+            "likes": [],
         }
 
-        for reply in reply.comment.replies:
+        for reply in comment.comment.replies:
             comment_reply_data = {
-                "reply_content": reply.content,
-                "reply_username": reply.user.username,
-                "reply_created_at": reply.created_at,
+                "id": reply.id,
+                "content": reply.content,
+                "username": reply.user.username,
+                "user_id": reply.user.id,
+                "comment_id": reply.comment_id,
+                "created_at": reply.created_at,
             }
-            reply_data["comment"]["replies"].append(comment_reply_data)
+            comment_data["replies"].append(comment_reply_data)
 
-        for like in reply.comment.likes:
+        for like in comment.comment.likes:
             comment_like_data = {
                 "id": like.user.id,
                 "username": like.user.username,
+                "user_id": like.user.id,
+                "comment_id": like.comment_id,
             }
-            reply_data["comment"]["likes"].append(comment_like_data)
+            comment_data["likes"].append(comment_like_data)
 
-        user_data["replies"].append(reply_data)
+        replies_data.append(comment_data)
+
+    user_data = {"id": user.id, "username": user.username, "replies": replies_data}
 
     return render_template(
         "user_info.html",
-        user=user,
         user_data=user_data,
-        comments=comments,
-        replies=replies,
-        likes=likes,
+        total_comments=total_comments,
+        total_replies=total_replies,
+        total_likes=total_likes,
         type="replies",
     )
 
@@ -467,12 +463,9 @@ def user_replies(user_id):
 @app.route("/user_likes/<int:user_id>", methods=["GET"])
 def user_likes(user_id):
     user = User.query.get(user_id)
-    comments = Comment.query.filter_by(user_id=user.id).all()
-    replies = Reply.query.filter_by(user_id=user.id).all()
-    likes = Like.query.filter_by(user_id=user.id).all()
-
-    if user is None:
-        return jsonify({"message": "User not found"}), 404
+    total_comments = len(Comment.query.filter_by(user_id=user.id).all())
+    total_replies = len(Reply.query.filter_by(user_id=user.id).all())
+    total_likes = len(Like.query.filter_by(user_id=user.id).all())
 
     user_likes = (
         Like.query.options(joinedload(Like.comment).joinedload(Comment.user))
@@ -483,97 +476,102 @@ def user_likes(user_id):
         .all()
     )
 
-    user_data = {"id": user.id, "username": user.username, "likes": []}
-
-    for like in user_likes:
-        like_data = {
-            "id": like.comment.id,
-            "content": like.comment.content,
-            "username": like.comment.user.username,
-            "created_at": like.comment.created_at,
-            "total_replies": len(like.comment.replies),
-            "total_likes": len(like.comment.likes),
-            "replies": [],  # Placeholder for nested replies
-            "likes": [],  # Placeholder for likes on the comment
+    likes_data = []
+    for comment in user_likes:
+        comment_data = {
+            "id": comment.comment.id,
+            "content": comment.comment.content,
+            "username": comment.comment.user.username,
+            "user_id": comment.comment.user.id,
+            "created_at": comment.comment.created_at,
+            "replies": [],
+            "likes": [],
         }
 
-        for reply in like.comment.replies:
+        for reply in comment.comment.replies:
             comment_reply_data = {
+                "id": reply.id,
                 "content": reply.content,
                 "username": reply.user.username,
+                "user_id": reply.user.id,
+                "comment_id": reply.comment_id,
                 "created_at": reply.created_at,
             }
-            like_data["replies"].append(comment_reply_data)
+            comment_data["replies"].append(comment_reply_data)
 
-        for like in like.comment.likes:
+        for like in comment.comment.likes:
             comment_like_data = {
-                "id": like.user.id,
+                "id": like.id,
                 "username": like.user.username,
+                "user_id": like.user.id,
+                "comment_id": like.comment_id,
             }
-            like_data["likes"].append(comment_like_data)
+            comment_data["likes"].append(comment_like_data)
 
-        user_data["likes"].append(like_data)
+        likes_data.append(comment_data)
+
+        user_data = {"id": user.id, "username": user.username, "likes": likes_data}
 
     return render_template(
         "user_info.html",
-        user=user,
         user_data=user_data,
-        comments=comments,
-        replies=replies,
-        likes=likes,
+        total_comments=total_comments,
+        total_replies=total_replies,
+        total_likes=total_likes,
         type="likes",
     )
 
 
-@app.route("/register/", methods=["GET", "POST"])
-def register():
+@app.route("/auth/", methods=["GET", "POST"])
+@app.route("/auth/<int:is_register>", methods=["GET", "POST"])
+def auth(is_register=None):
     if request.method == "GET":
         if current_user.is_authenticated:
             return redirect(url_for("index"))
-        return render_template("register.html")
+        return render_template("auth.html", is_register=is_register)
 
     if request.method == "POST":
+        if is_register is None:
+            is_register = bool(request.form.get("is_register"))
+
         username = request.form["username"]
         password = request.form["password"]
 
-        if User.query.filter_by(username=username).first():
-            return render_template(
-                "register.html",
-                error=True,
-                error_msg="There is already a registered user with that username. Please try again.",
-            )
+        if is_register:
+            if User.query.filter_by(username=username).first():
+                return render_template(
+                    "auth.html",
+                    is_register=True,
+                    error=True,
+                    error_msg="There is already a registered user with that username. Please try again.",
+                )
 
-        if username == "" or password == "":
-            return render_template(
-                "register.html",
-                error=True,
-                error_msg="Username and/or password cannot be blank. Please try again.",
-            )
+            if username == "" or password == "":
+                return render_template(
+                    "auth.html",
+                    is_register=True,
+                    error=True,
+                    error_msg="Username and/or password cannot be blank. Please try again.",
+                )
 
-        user = User(username=username)
-        user.set_password(password)
-        db.session.add(user)
-        db.session.commit()
-        login_user(user)
-        return redirect(url_for("index"))
-
-
-@app.route("/login/", methods=["GET", "POST"])
-def login():
-    if request.method == "GET":
-        if current_user.is_authenticated:
+            user = User(username=username)
+            user.set_password(password)
+            db.session.add(user)
+            db.session.commit()
+            login_user(user)
             return redirect(url_for("index"))
-        return render_template("login.html")
+        else:
+            user = User.query.filter_by(username=username).first()
+            if user is None or not user.check_password(password):
+                return render_template(
+                    "auth.html",
+                    is_register=False,
+                    error=True,
+                    error_msg="Incorrect username and/or password",
+                )
 
-    if request.method == "POST":
-        user = User.query.filter_by(username=request.form["username"]).first()
-        if user is None or not user.check_password(request.form["password"]):
-            return render_template(
-                "login.html", error=True, error_msg="Incorrect username and/or password"
-            )
-
-        login_user(user)
-        return redirect(url_for("index"))
+            login_user(user)
+            return redirect(url_for("index"))
 
 
 @app.route("/logout/")

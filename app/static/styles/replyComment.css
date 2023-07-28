@@ -9,11 +9,11 @@
     /* background: hsla(var(--primary-color-hsl), 0.5); */
     background: hsla(204, 100%, 12%, 0.5);
   }
-  @media (width < 49rem) {
+  /* @media (width < 49rem) {
     width: 90%;
     padding: 1.5rem 1.75rem;
     height: 75%;
-  }
+  } */
 
   & .comment-reply-form {
     display: flex;
@@ -38,18 +38,18 @@
         font-size: 1.125rem;
         line-height: 1.75rem;
         color: var(--text-color);
-        @media (width < 32rem) {
+        /* @media (width < 32rem) {
           font-size: 1rem;
-        }
+        } */
       }
 
       & .comment-reply-comment-subtext {
         font-family: var(--subtext-font);
         font-size: 0.875rem;
         color: var(--subtext-color);
-        @media (width < 32rem) {
+        /* @media (width < 32rem) {
           font-size: 0.75rem;
-        }
+        } */
         &.strong {
           font-weight: 600;
           color: var(--accent-color-one);
@@ -75,12 +75,12 @@
       &::placeholder {
         color: var(--subtext-color);
       }
-      @media (width < 49rem) {
+      /* @media (width < 49rem) {
         font-size: 1.125rem;
-      }
-      @media (width < 32rem) {
+      } */
+      /* @media (width < 32rem) {
         font-size: 1rem;
-      }
+      } */
     }
 
     & .comment-reply-actions {

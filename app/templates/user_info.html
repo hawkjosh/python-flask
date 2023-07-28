@@ -6,29 +6,26 @@
 
 {% block content %}
 <div class="user-activity-heading-container">
-  {% if user.id == current_user.id %}
   <div class="user-activity-title">
-    My Forum Activity
+    Forum Activity for <span class="username">{{user_data.username}}</span>
   </div>
-  {% else %}
-  <div class="user-activity-title">
-    Forum Activity for <span class="username">{{user.username}}</span>
-  </div>
-  {% endif %}
   <div class="user-activity-stats-container">
-    <div class="user-stat-type-wrapper {% if type == 'comments' %}comments selected{% endif %}" href="{{ url_for('user_replies', user_id=user.id) }}">
-      <a class="{% if type == 'comments' %}user-stat-type-link selected{% else %}user-stat-type-link{% endif %}" href="{{ url_for('user_comments', user_id=user.id) }}">
-        {{ comments|length|pluralize_comment|upper }}
+    <div class="user-stat-type-wrapper {% if type == 'comments' %}comments selected{% endif %}"">
+      <a class=" user-stat-type-link {% if type=='comments' %}selected{% endif %}"
+      href="{{ url_for('user_comments', user_id=user_data.id) }}">
+      {{ total_comments|pluralize_comment|upper }}
       </a>
     </div>
     <div class="user-stat-type-wrapper {% if type == 'replies' %}replies selected{% endif %}">
-      <a class="{% if type == 'replies' %}user-stat-type-link selected{% else %}user-stat-type-link{% endif %}" href="{{ url_for('user_replies', user_id=user.id) }}">
-        {{ replies|length|pluralize_reply|upper }}
+      <a class="user-stat-type-link {% if type == 'replies' %}selected{% endif %}"
+        href="{{ url_for('user_replies', user_id=user_data.id) }}">
+        {{ total_replies|pluralize_reply|upper }}
       </a>
     </div>
     <div class="user-stat-type-wrapper {% if type == 'likes' %}likes selected{% endif %}">
-      <a class="{% if type == 'likes' %}user-stat-type-link selected{% else %}user-stat-type-link{% endif %}" href="{{ url_for('user_likes', user_id=user.id) }}">
-        {{ likes|length|pluralize_like|upper }}
+      <a class="user-stat-type-link {% if type == 'likes' %}selected{% endif %}"
+        href="{{ url_for('user_likes', user_id=user_data.id) }}">
+        {{ total_likes|pluralize_like|upper }}
       </a>
     </div>
   </div>
@@ -37,27 +34,33 @@
 {% if type == "comments" %}
 <div class="user-comments-list-container">
   {% for comment in user_data.comments %}
-  <div class="user-comment-card highlight">
+  <div class="user-comment-card {% if user_data.username == comment.username %}highlight{% endif %}">
     <div class="user-comment-content-wrapper">
       <div class="user-comment-text">
         {{comment.content}}
       </div>
       <div class="user-comment-subtext">
         <div class="user-comment-post-info">
-          Posted on
+          Posted by
+          <span class="user-strong">
+            <a class="user-link" href="{{ url_for('user_comments', user_id=comment.user_id) }}">
+              {{ comment.username }}
+            </a>
+          </span>
+          on
           <span class="user-strong">
             {{comment.created_at|clean_date}}
           </span>
         </div>
         <div class="user-comment-counts">
           <div class="user-comment-count-text">
-            {{comment.replies|length}} replies
+            {{comment.replies|length|pluralize_reply}}
           </div>
           <span class="user-comment-count-divider">
             |
           </span>
           <div class="user-comment-count-text">
-            {{comment.likes|length}} likes
+            {{comment.likes|length|pluralize_like}}
           </div>
         </div>
       </div>
@@ -74,13 +77,15 @@
       <div class="user-replies-label">Replies...</div>
       <div class="user-reply-cards-container">
         {% for reply in comment.replies %}
-        <div class="user-reply-card">
+        <div class="user-reply-card {% if user_data.username == reply.username %}highlight{% endif %}">
           <div class="user-reply-content-wrapper">
             <div class="user-reply-text">{{ reply.content }}</div>
             <div class="user-reply-subtext">
               Reply from
               <span class="user-strong">
-                {{ reply.username }}
+                <a class="user-link" href="{{ url_for('user_comments', user_id=reply.user_id) }}">
+                  {{ reply.username }}
+                </a>
               </span>
               on
               <span class="user-strong">
@@ -105,8 +110,8 @@
       <div class="user-likes-label">Likes...</div>
       <div class="user-likes-content-wrapper">
         {% for like in comment.likes %}
-        <a class="user-like-username-btn" href="{{ url_for('user_comments', user_id=like.id) }}">
-          <div class="user-like-username">
+        <a class="user-like-username-btn" href="{{ url_for('user_comments', user_id=like.user_id) }}">
+          <div class="user-like-username {% if user_data.username == like.username %}highlight{% endif %}">
             {{ like.username }}
           </div>
         </a>
@@ -120,32 +125,34 @@
 
 {% elif type == "replies" %}
 <div class="user-comments-list-container">
-  {% for reply in user_data.replies %}
-  <div class="user-comment-card">
+  {% for comment in user_data.replies %}
+  <div class="user-comment-card {% if user_data.username == comment.username %}highlight{% endif %}">
     <div class="user-comment-content-wrapper">
       <div class="user-comment-text">
-        {{reply.comment.content}}
+        {{comment.content}}
       </div>
       <div class="user-comment-subtext">
         <div class="user-comment-post-info">
           Posted by
           <span class="user-strong">
-            {{reply.comment.username}}
+            <a class="user-link" href="{{ url_for('user_comments', user_id=comment.user_id) }}">
+              {{ comment.username }}
+            </a>
           </span>
           on
           <span class="user-strong">
-            {{reply.comment.created_at|clean_date}}
+            {{comment.created_at|clean_date}}
           </span>
         </div>
         <div class="user-comment-counts">
           <div class="user-comment-count-text">
-            {{reply.comment.total_replies}} replies
+            {{comment.replies|length|pluralize_reply}}
           </div>
           <span class="user-comment-count-divider">
             |
           </span>
           <div class="user-comment-count-text">
-            {{reply.comment.total_likes}} likes
+            {{comment.likes|length|pluralize_like}}
           </div>
         </div>
       </div>
@@ -154,25 +161,27 @@
       <hr class="user-info-divider-line">
     </div>
     <div class="user-replies-container">
-      {% if not reply.comment.replies %}
+      {% if not comment.replies %}
       <div class="user-replies-label empty">
         This comment does not have any replies yet.
       </div>
       {% else %}
       <div class="user-replies-label">Replies...</div>
       <div class="user-reply-cards-container">
-        {% for comment_reply in reply.comment.replies %}
-        <div class="{% if user_data.username == comment_reply.reply_username %}user-reply-card highlight{% else %}user-reply-card{% endif %}">
+        {% for reply in comment.replies %}
+        <div class="user-reply-card {% if user_data.username == reply.username %}highlight{% endif %}">
           <div class="user-reply-content-wrapper">
-            <div class="user-reply-text">{{ comment_reply.reply_content }}</div>
+            <div class="user-reply-text">{{ reply.content }}</div>
             <div class="user-reply-subtext">
               Reply from
               <span class="user-strong">
-                {{ comment_reply.reply_username }}
+                <a class="user-link" href="{{ url_for('user_comments', user_id=reply.user_id) }}">
+                  {{ reply.username }}
+                </a>
               </span>
               on
               <span class="user-strong">
-                {{ comment_reply.reply_created_at|clean_date }}
+                {{ reply.created_at|clean_date }}
               </span>
             </div>
           </div>
@@ -185,16 +194,16 @@
       <hr class="user-info-divider-line">
     </div>
     <div class="user-likes-container">
-      {% if not reply.comment.likes %}
+      {% if not comment.likes %}
       <div class="user-likes-label empty">
         This comment does not have any likes yet.
       </div>
       {% else %}
       <div class="user-likes-label">Likes...</div>
       <div class="user-likes-content-wrapper">
-        {% for like in reply.comment.likes %}
-        <a class="user-like-username-btn" href="{{ url_for('user_comments', user_id=like.id) }}">
-          <div class="user-like-username">
+        {% for like in comment.likes %}
+        <a class="user-like-username-btn" href="{{ url_for('user_comments', user_id=like.user_id) }}">
+          <div class="user-like-username {% if user_data.username == like.username %}highlight{% endif %}">
             {{ like.username }}
           </div>
         </a>
@@ -208,32 +217,34 @@
 
 {% elif type == "likes" %}
 <div class="user-comments-list-container">
-  {% for like in user_data.likes %}
+  {% for comment in user_data.likes %}
   <div class="user-comment-card">
     <div class="user-comment-content-wrapper">
       <div class="user-comment-text">
-        {{ like.content }}
+        {{ comment.content }}
       </div>
       <div class="user-comment-subtext">
         <div class="user-comment-post-info">
           Posted by
           <span class="user-strong">
-            {{ like.username }}
+            <a class="user-link" href="{{ url_for('user_comments', user_id=comment.user_id) }}">
+              {{ comment.username }}
+            </a>
           </span>
           on
           <span class="user-strong">
-            {{ like.created_at|clean_date }}
+            {{ comment.created_at|clean_date }}
           </span>
         </div>
         <div class="user-comment-counts">
           <div class="user-comment-count-text">
-            {{ like.total_replies }} replies
+            {{ comment.replies|length|pluralize_reply }}
           </div>
           <span class="user-comment-count-divider">
             |
           </span>
           <div class="user-comment-count-text">
-            {{ like.total_likes }} likes
+            {{ comment.likes|length|pluralize_like }}
           </div>
         </div>
       </div>
@@ -242,27 +253,29 @@
       <hr class="user-info-divider-line">
     </div>
     <div class="user-replies-container">
-      {% if not like.replies %}
+      {% if not comment.replies %}
       <div class="user-replies-label empty">
         This comment does not have any replies yet.
       </div>
       {% else %}
       <div class="user-replies-label">Replies...</div>
       <div class="user-reply-cards-container">
-        {% for comment_reply in like.replies %}
-        <div class="user-reply-card">
+        {% for reply in comment.replies %}
+        <div class="user-reply-card {% if user_data.username == reply.username %}highlight{% endif %}">
           <div class="user-reply-content-wrapper">
             <div class="user-reply-text">
-              {{ comment_reply.content }}
+              {{ reply.content }}
             </div>
             <div class="user-reply-subtext">
               Reply from
               <span class="user-strong">
-                {{ comment_reply.username }}
+                <a class="user-link" href="{{ url_for('user_comments', user_id=reply.user_id) }}">
+                  {{ reply.username }}
+                </a>
               </span>
               on
               <span class="user-strong">
-                {{ comment_reply.created_at }}
+                {{ reply.created_at|clean_date }}
               </span>
             </div>
           </div>
@@ -275,18 +288,17 @@
       <hr class="user-info-divider-line">
     </div>
     <div class="user-likes-container">
-      {% if not like.likes %}
+      {% if not comment.likes %}
       <div class="user-likes-label empty">
         This comment does not have any likes yet.
       </div>
       {% else %}
       <div class="user-likes-label">Likes...</div>
       <div class="user-likes-content-wrapper">
-        {% for comment_like in like.likes %}
-        <a class="user-like-username-btn" href="{{ url_for('user_comments', user_id=comment_like.id) }}">
-          <div
-            class="{% if user_data.username == comment_like.username %}user-like-username highlight{% else %}user-like-username{% endif %}">
-            {{ comment_like.username }}
+        {% for like in comment.likes %}
+        <a class="user-like-username-btn" href="{{ url_for('user_comments', user_id=like.user_id) }}">
+          <div class="user-like-username {% if user_data.username == like.username %}highlight{% endif %}">
+            {{ like.username }}
           </div>
         </a>
         {% endfor %}

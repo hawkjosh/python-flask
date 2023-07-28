@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block script %}
+<link rel="stylesheet" href="../static/styles/auth.css" />
+{% endblock script %}
+
+{% block content %}
+{% if error %}
+<dialog class="auth-error-container" open>
+  <form class="auth-error-content-wrapper" method="dialog">
+    <div class="auth-error-msg">
+      {{ error_msg }}
+    </div>
+    <button class="auth-error-close-btn">
+      Close
+    </button>
+  </form>
+</dialog>
+{% endif %}
+<form class="auth-form-container"
+  action="{{ url_for('auth', is_register=1 if is_register is not defined else is_register) }}" method="POST">
+  <div class="auth-input-wrapper">
+    <input class="auth-input" type="text" name="username"
+      placeholder="{% if is_register %}Create your{% else %}Enter your{% endif %} username" />
+    <input class="auth-input" type="password" name="password"
+      placeholder="{% if is_register %}Create your{% else %}Enter your{% endif %} password" />
+  </div>
+  <div class="auth-actions">
+    {% if is_register %}
+    <input class="action-btn" type="submit" value="Register" />
+    <span class="choice-text">or</span>
+    <a class="action-btn" href="{{ url_for('auth', is_register=0) }}">
+      Login
+    </a>
+    {% else %}
+    <input class="action-btn" type="submit" value="Login" />
+    <span class="choice-text">or</span>
+    <a class="action-btn" href="{{ url_for('auth', is_register=1) }}">
+      Register
+    </a>
+    {% endif %}
+  </div>
+</form>
+{% endblock content %}

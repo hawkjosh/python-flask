@@ -1,7 +1,7 @@
 .user-activity-heading-container {
 	display: flex;
 	flex-direction: column;
-	gap: 2rem;
+	gap: 3rem;
 
 	& .user-activity-title {
 		text-align: center;
@@ -12,6 +12,7 @@
 		& .username {
 			background: var(--accent-color-two);
 			padding: 0.25rem 0.675rem;
+			border: 0.125rem solid var(--primary-color);
 			border-radius: 0.5rem;
 		}
 	}
@@ -31,7 +32,7 @@
 			position: relative;
 			background: var(--accent-color-three);
 			&.selected {
-				border: 2px solid var(--primary-color);
+				border: 0.125rem solid var(--primary-color);
 				background: var(--accent-color-two);
 				&::after {
 					content: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzZW0iIGhlaWdodD0iM2VtIiB2aWV3Qm94PSIwIDAgMjAgMTQiPjxwYXRoIGZpbGw9ImhzbCgyMDQsIDEwMCUsIDEyJSkiIGQ9Ik0gMTAuNCAxMS44IGwgNy4zIC04LjMgYyAwLjUgLTAuNSAwLjIgLTEuNSAtMC40IC0xLjUgaCAtMTQuNyBjIC0wLjYgMCAtMC45IDEgLTAuNCAxLjUgbCA3LjMgOC4zIGMgMC4yIDAuMyAwLjYgMC4zIDAuOCAwIFoiLz48L3N2Zz4=');
@@ -60,19 +61,21 @@
 .user-comments-list-container {
 	display: flex;
 	flex-direction: column;
-	gap: 1.5rem;
+	gap: 2rem;
 
 	& .user-comment-card {
 		background: var(--secondary-color);
 		border: 0.0625rem solid var(--primary-color);
-		box-shadow: var(--card-shadow);
 		border-radius: 0.5rem;
 		padding: 1rem;
 		display: flex;
 		flex-direction: column;
 		gap: 1.25rem;
 		&.highlight {
-			/* background: yellow; */
+			box-shadow: var(--user-highlight-shadow);
+			border-color: var(--accent-color-two);
+			border-width: 0.125rem;
+			border-bottom-width: 0.1875rem;
 		}
 
 		& .user-comment-content-wrapper {
@@ -108,6 +111,11 @@
 						font-weight: 600;
 						color: var(--accent-color-one);
 						filter: contrast(75%);
+
+						& .user-link {
+							text-decoration: none;
+							color: var(--accent-color-one);
+						}
 					}
 				}
 
@@ -172,12 +180,14 @@
 					background: var(--secondary-color);
 					padding: 0.75rem;
 					border-radius: 0.5rem;
-					box-shadow: var(--replies-card-shadow);
 					display: flex;
 					flex-direction: column;
 					gap: 0.75rem;
 					&.highlight {
-						/* background: yellow; */
+						box-shadow: var(--user-highlight-shadow);
+						border-color: var(--accent-color-two);
+						border-width: 0.125rem;
+						border-bottom-width: 0.1875rem;
 					}
 
 					& .user-reply-content-wrapper {
@@ -207,6 +217,11 @@
 								font-weight: 600;
 								color: var(--accent-color-one);
 								filter: contrast(75%);
+
+								& .user-link {
+									text-decoration: none;
+									color: var(--accent-color-one);
+								}		
 							}
 						}
 					}
@@ -249,10 +264,15 @@
 						align-items: center;
 						font-size: 1.125rem;
 						font-weight: 600;
-						color: var(--accent-color-two);
-						background: var(--hover-color);
+						color: var(--primary-color);
+						background: var(--accent-color-three);
+						filter: brightness(115%);
 						&.highlight {
-							/* background: yellow; */
+							box-shadow: var(--user-highlight-shadow);
+							border-color: var(--accent-color-two);
+							border-width: 0.25rem;
+							border-bottom-width: 0.3125rem;
+							/* filter: brightness(100%); */
 						}
 					}
 				}
