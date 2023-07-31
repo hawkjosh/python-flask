@@ -5,11 +5,11 @@
 {% endblock script %}
 
 {% block content %}
-	<a class="return-btn-link" href="{{ url_for('index') }}">
-		<div class="return-btn">
-			Return to All Comments
-		</div>
-	</a>
+<a class="return-btn-link" href="{{ url_for('index') }}">
+	<div class="return-btn">
+		Return to All Comments
+	</div>
+</a>
 <div class="comments-list-container">
 
 	<div class="{% if comment.user_id == current_user.id %}comment-card curr-user{% else %}comment-card{% endif %}">
@@ -85,14 +85,14 @@
 					<span class="strong">{{ reply.created_at|clean_date }}</span>
 				</div>
 				{% if reply.user_id == current_user.id %}
-				<form class="comment-reply-actions" action="{{ url_for('delete_reply', reply_id=reply.id) }}" method="POST">
-					<button class="action-btn delete" type="submit">
-						<svg class="action-btn-icon delete" viewBox="0 0 40 40" style="width: 2rem">
-							<path
-								d="M10 36q-1.6 0-2.8-1t-1.2-2.5v-23.1h-2v-3.6h10v-1.8h12v1.8h10v3.6h-2v23.1q0 1.5-1.2 2.5t-2.8 1h-20zm20-26.7h-20v23.1h20v-23.1zm-16 19.6h4v-16h-4v16zm8 0h4v-16h-4v16Z" />
-						</svg>
-					</button>
-				</form>
+				<div class="comment-reply-actions">
+					<div class="action-btn-wrapper">
+						<span class="action-tooltip delete">Delete</span>
+						<form action="{{ url_for('delete_reply', reply_id=reply.id) }}" method="POST">
+							<button class="action-btn delete" type="submit" />
+						</form>
+					</div>
+				</div>
 				{% endif %}
 			</div>
 		</div>

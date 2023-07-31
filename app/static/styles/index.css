@@ -1,7 +1,7 @@
 .login-msg-wrapper {
 	width: 100%;
 	background: var(--accent-color-two);
-	height: 7.5vh;
+	min-height: 7.5vh;
 	border-radius: 0.375rem;
 	padding: 0.5rem 0.75rem;
 	display: flex;
@@ -10,7 +10,7 @@
 
 	& .login-msg {
 		color: var(--secondary-color);
-		font-size: 1.5rem;
+		font-size: clamp(1.25rem, 0.909rem + 1.364vw, 2rem);
 		font-weight: 700;
 	}
 }

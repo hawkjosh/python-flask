@@ -3,11 +3,19 @@
 {% endblock script %}
 
 <div class="nav-container">
+  {% if not current_user.is_authenticated and current_page != "index" %}
   <div class="nav-title-section">
     <a class="nav-title" href="{{ url_for('index') }}">
       Comment Forum
     </a>
   </div>
+  {% else %}
+  <div class="nav-title-section hide">
+    <a class="nav-title" href="{{ url_for('index') }}">
+      Comment Forum
+    </a>
+  </div>
+  {% endif %}
 
   {% if current_user.is_authenticated and current_page == "index" %}
   <div class="new-comment-btn-section">
@@ -39,7 +47,7 @@
   </div>
   {% endif %}
   {% if not current_user.is_authenticated and current_page == "index" %}
-  <a class="nav-login" href="{{ url_for('login') }}">
+  <a class="nav-login" href="{{ url_for('auth') }}">
     Login
   </a>
   {% endif %}

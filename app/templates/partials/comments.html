@@ -11,9 +11,13 @@
   </div>
   {% endif %}
   {% for comment in comments|sort(reverse=true, attribute="created_at") %}
-  <div class="{% if comment.user_id == current_user.id %}comment-card curr-user{% else %}comment-card{% endif %}" data-comment-id="{{ comment.id }}" data-comment-content="{{ comment.content }}" data-comment-username="{{ comment.id|comment_username }}" data-comment-date="{{ comment.created_at|clean_date }}">
-    <div class="{% if not current_user.is_authenticated %}comment-content unauth{% else %}comment-content{% endif %}">{{ comment.content }}</div>
-    <div class="{% if not current_user.is_authenticated %}comment-info-container unauth{% else %}comment-info-container{% endif %}">
+  <div class="{% if comment.user_id == current_user.id %}comment-card curr-user{% else %}comment-card{% endif %}"
+    data-comment-id="{{ comment.id }}" data-comment-content="{{ comment.content }}"
+    data-comment-username="{{ comment.id|comment_username }}" data-comment-date="{{ comment.created_at|clean_date }}">
+    <div class="{% if not current_user.is_authenticated %}comment-content unauth{% else %}comment-content{% endif %}">{{
+      comment.content }}</div>
+    <div
+      class="{% if not current_user.is_authenticated %}comment-info-container unauth{% else %}comment-info-container{% endif %}">
       <div class="comment-info">
         <div class="comment-subtext">
           Posted by
@@ -21,7 +25,7 @@
             <a class="user-link" href="{{ url_for('user_comments', user_id=comment.user.id) }}">
               {{comment.id|comment_username }}
             </a>
-          </span> on 
+          </span> on
           <span class="strong">
             {{ comment.created_at|clean_date }}
           </span>
@@ -94,5 +98,5 @@
 
   {% include "partials/reply_comment.html" %}
   {% include "partials/edit_comment.html" %}
-{% endfor %}
+  {% endfor %}
 </div>

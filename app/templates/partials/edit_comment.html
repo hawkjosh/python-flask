@@ -5,8 +5,7 @@
 {% if current_user.is_authenticated %}
 <dialog class="comment-edit-modal" data-comment-edit>
   <form class="comment-edit-form" action="{{ url_for('edit_comment', comment_id=comment.id) }}" method="POST">
-    <textarea class="comment-edit-textbox" name="contents"
-      data-comment-edit-comment></textarea>
+    <textarea class="comment-edit-textbox" name="contents" data-comment-edit-comment></textarea>
     <div class="comment-edit-actions">
       <input class="action-btn save" type="submit" value="Save" />
       <input class="action-btn cancel" type="button" value="Cancel" data-comment-edit-close />

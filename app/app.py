@@ -262,7 +262,7 @@ def replies(comment_id):
         return redirect(url_for("index"))
 
     if not current_user.is_authenticated:
-        return redirect(url_for("login"))
+        return redirect(url_for("auth"))
 
     return render_template("replies.html", comment=comment, replies=replies)
 
@@ -316,26 +316,6 @@ def like_comment(comment_id):
     db.session.commit()
 
     return redirect(url_for("index"))
-
-
-# @app.route("/comment/like/<int:comment_id>", methods=["POST"])
-# @login_required
-# def like_comment(comment_id):
-#     comment = Comment.query.get(comment_id)
-#     like = Like(comment_id=comment_id, user_id=current_user.id, value=True)
-#     db.session.add(like)
-#     db.session.commit()
-#     return redirect(url_for("index"))
-
-
-# @app.route("/comment/unlike/<int:comment_id>", methods=["POST"])
-# @login_required
-# def unlike_comment(comment_id):
-#     comment = Comment.query.get(comment_id)
-#     like = Like.query.filter_by(comment_id=comment_id, user_id=current_user.id).first()
-#     db.session.delete(like)
-#     db.session.commit()
-#     return redirect(url_for("index"))
 
 
 @app.route("/user_comments/<int:user_id>", methods=["GET"])
@@ -528,7 +508,9 @@ def auth(is_register=None):
     if request.method == "GET":
         if current_user.is_authenticated:
             return redirect(url_for("index"))
-        return render_template("auth.html", is_register=is_register)
+        return render_template(
+            "auth.html", is_register=is_register, currrent_page="auth"
+        )
 
     if request.method == "POST":
         if is_register is None:
