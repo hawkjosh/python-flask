@@ -332,6 +332,8 @@ def user_comments(user_id):
         .all()
     )
 
+    user_data = {"id": user.id, "username": user.username, "comments": []}
+
     comments_data = []
     for comment in user_comments:
         comment_data = {
@@ -366,7 +368,7 @@ def user_comments(user_id):
 
         comments_data.append(comment_data)
 
-    user_data = {"id": user.id, "username": user.username, "comments": comments_data}
+    user_data["comments"] = comments_data
 
     return render_template(
         "user_info.html",
@@ -393,6 +395,8 @@ def user_replies(user_id):
         .filter_by(user_id=user.id)
         .all()
     )
+
+    user_data = {"id": user.id, "username": user.username, "replies": []}
 
     replies_data = []
     for comment in user_replies:
@@ -428,7 +432,7 @@ def user_replies(user_id):
 
         replies_data.append(comment_data)
 
-    user_data = {"id": user.id, "username": user.username, "replies": replies_data}
+    user_data["replies"] = replies_data
 
     return render_template(
         "user_info.html",
@@ -455,6 +459,8 @@ def user_likes(user_id):
         .filter_by(user_id=user.id)
         .all()
     )
+
+    user_data = {"id": user.id, "username": user.username, "likes": []}
 
     likes_data = []
     for comment in user_likes:
@@ -490,7 +496,7 @@ def user_likes(user_id):
 
         likes_data.append(comment_data)
 
-        user_data = {"id": user.id, "username": user.username, "likes": likes_data}
+    user_data["likes"] = likes_data
 
     return render_template(
         "user_info.html",
